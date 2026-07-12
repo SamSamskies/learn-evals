@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Eval glossary · Learn Evals</title>
+    <link rel="stylesheet" href="../assets/course.css" />
+  </head>
+  <body>
+    <main>
+      <header>
+        <p class="eyebrow">Reference · Phase 3</p>
+        <h1>Eval glossary</h1>
+        <p class="lede">The small vocabulary needed to discuss an evaluation system precisely.</p>
+      </header>
+
+      <section>
+        <div class="card">
+          <h3>Task (test case)</h3>
+          <p>One input or scenario with defined success criteria.</p>
+        </div>
+        <div class="card">
+          <h3>Dataset</h3>
+          <p>A collection of representative tasks, often including human-verified expected outputs or labels.</p>
+        </div>
+        <div class="card">
+          <h3>Golden dataset</h3>
+          <p>A curated, trusted dataset used as a stable comparison point. “Golden” describes its quality and role, not its size.</p>
+        </div>
+        <div class="card">
+          <h3>Trial</h3>
+          <p>One attempt to run a system on one task. Nondeterministic systems may need multiple trials per task.</p>
+        </div>
+        <div class="card">
+          <h3>Grader</h3>
+          <p>Logic or judgment that scores an output or outcome against a criterion. A task can use several graders.</p>
+        </div>
+        <div class="card">
+          <h3>Code-based grader</h3>
+          <p>A deterministic check such as exact matching, schema validation, numeric comparison, or a unit test.</p>
+        </div>
+        <div class="card">
+          <h3>Model-based grader</h3>
+          <p>An LLM applying a rubric to nuanced output. It scales subjective review but must be calibrated against humans.</p>
+        </div>
+        <div class="card">
+          <h3>Human grader</h3>
+          <p>A person—often a domain expert—judging quality or correctness. Expensive, but the reference for subjective and high-stakes criteria.</p>
+        </div>
+        <div class="card">
+          <h3>Eval harness</h3>
+          <p>The infrastructure that runs tasks, records outputs, applies graders, and aggregates results.</p>
+        </div>
+        <div class="card">
+          <h3>Regression eval</h3>
+          <p>A suite asking whether the system still handles behavior it previously handled reliably.</p>
+        </div>
+      </section>
+
+      <footer>
+        Sources:
+        <a href="https://platform.openai.com/docs/guides/evals">OpenAI eval guide</a>
+        and
+        <a href="https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents">Anthropic's eval taxonomy</a>.
+      </footer>
+    </main>
+  </body>
+</html>

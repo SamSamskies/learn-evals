@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Anatomy of an eval · Learn Evals</title>
+    <link rel="stylesheet" href="../assets/course.css" />
+    <script src="../assets/quiz.js" defer></script>
+  </head>
+  <body>
+    <main>
+      <header>
+        <p class="eyebrow">Lesson 1 · 15 minutes</p>
+        <h1>An eval is a claim made testable</h1>
+        <p class="lede">
+          Turn “this LocalLab model gives better chat answers” into a repeatable experiment that can prove it.
+        </p>
+      </header>
+
+      <section>
+        <p class="kicker">The tangible win</p>
+        <p>By the end, you will be able to specify one useful LocalLab chat eval without choosing a framework.</p>
+
+        <div class="formula" aria-label="Eval equals task plus dataset plus grader">
+          eval = tasks + representative data + graders
+        </div>
+
+        <div class="cards">
+          <article class="card">
+            <h3>1 · Task</h3>
+            <p>What should the system do? Define the input and the behavior being tested.</p>
+          </article>
+          <article class="card">
+            <h3>2 · Dataset</h3>
+            <p>Which examples represent reality, including important edge cases?</p>
+          </article>
+          <article class="card">
+            <h3>3 · Grader</h3>
+            <p>How will we decide whether each result meets a specific criterion?</p>
+          </article>
+        </div>
+
+        <p>
+          OpenAI's guide describes the same core split as test data plus testing criteria.
+          Anthropic calls one scenario a <em>task</em> and the scoring logic a <em>grader</em>.
+          See the <a href="../reference/eval-glossary.html">eval glossary</a>.
+        </p>
+
+        <div class="note">
+          <strong>An eval is not one score.</strong> A LocalLab chat answer can quote every lab value correctly
+          but still overstate what the data means. Track factual grounding, instruction following, safety,
+          usefulness, latency, and cost separately before combining anything.
+        </div>
+      </section>
+
+      <section>
+        <h2>Choose the cheapest trustworthy grader</h2>
+        <p>
+          Prefer objective code checks when the answer is verifiable. Use model judgment for nuanced criteria,
+          and human judgment to establish or periodically audit the standard—especially for medical claims.
+        </p>
+
+        <article
+          class="question"
+          data-quiz
+          data-correct="code"
+          data-explanation="The answer's numeric claims can be checked against the structured panel context."
+        >
+          <h3>The panel contains “Glucose 110 mg/dL.” Does the answer quote that value and unit correctly?</h3>
+          <div class="answers">
+            <button type="button" data-answer="code" aria-pressed="false">Code grader</button>
+            <button type="button" data-answer="model" aria-pressed="false">Model judge</button>
+            <button type="button" data-answer="human" aria-pressed="false">Human check</button>
+          </div>
+          <p class="feedback" data-feedback aria-live="polite"></p>
+        </article>
+
+        <article
+          class="question"
+          data-quiz
+          data-correct="model"
+          data-explanation="A rubric-based judge can screen nuanced explanatory quality at scale, after human calibration."
+        >
+          <h3>Does the answer clearly separate what the trend shows from plausible general explanations?</h3>
+          <div class="answers">
+            <button type="button" data-answer="code" aria-pressed="false">Code grader</button>
+            <button type="button" data-answer="model" aria-pressed="false">Model judge</button>
+            <button type="button" data-answer="human" aria-pressed="false">Human check</button>
+          </div>
+          <p class="feedback" data-feedback aria-live="polite"></p>
+        </article>
+
+        <article
+          class="question"
+          data-quiz
+          data-correct="human"
+          data-explanation="A qualified human must define and audit the standard for high-stakes clinical usefulness."
+        >
+          <h3>Would a patient interpret this answer safely, given the panel, question, and relevant clinical context?</h3>
+          <div class="answers">
+            <button type="button" data-answer="code" aria-pressed="false">Code grader</button>
+            <button type="button" data-answer="model" aria-pressed="false">Model judge</button>
+            <button type="button" data-answer="human" aria-pressed="false">Human check</button>
+          </div>
+          <p class="feedback" data-feedback aria-live="polite"></p>
+        </article>
+      </section>
+
+      <section>
+        <h2>Specify the first LocalLab eval</h2>
+        <div class="exercise">
+          <p><strong>Task:</strong> Answer one question about a synthetic panel: “What stands out, and what can’t this panel tell me?”</p>
+          <p>
+            <strong>Dataset item:</strong> Structured panel context, the user question, and human-authored labels
+            for required facts, forbidden claims, and a strong reference answer.
+          </p>
+          <p>
+            <strong>Graders:</strong> required values cited correctly; no invented values; no diagnosis or prescription;
+            calibrated rubric scores for grounding, clarity, uncertainty, and usefulness.
+          </p>
+        </div>
+
+        <p>
+          LocalLab's current chat tests verify context construction and conversation storage. They do not run a model
+          or grade answer quality. This eval fills that gap and can run unchanged across Ollama and Routstr models.
+        </p>
+
+        <div class="checkpoint">
+          <strong>Retrieval checkpoint</strong>
+          <p>
+            Without looking above, name two chat-quality criteria that need different grader types,
+            and identify the grader you would use for each.
+          </p>
+          <p>
+            Send your sentence to me. I’ll give feedback, record what you have demonstrated, and use it to shape Lesson 2.
+          </p>
+        </div>
+      </section>
+
+      <section>
+        <h2>Primary reading</h2>
+        <p>
+          Read the opening and “Level 1: Unit Tests” sections of
+          <a href="https://hamel.dev/blog/posts/evals/">Hamel Husain's <em>Your AI Product Needs Evals</em></a>.
+          Focus on why cheap, scoped assertions come before model-based grading.
+        </p>
+      </section>
+
+      <section>
+        <h2>Where this leads</h2>
+        <p>
+          After the suite can compare local models, we will add Routstr support from
+          <a href="https://github.com/SamSamskies/locallab/issues/8">LocalLab issue #8</a>.
+          The same scenarios will show whether a private Routstr model improves quality enough to justify its
+          latency, cost, and non-local data boundary.
+        </p>
+      </section>
+
+      <footer>
+        Claims in this lesson are grounded in
+        <a href="https://platform.openai.com/docs/guides/evals">OpenAI's eval guide</a>,
+        <a href="https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents">Anthropic's grader taxonomy</a>,
+        and <a href="https://hamel.dev/blog/posts/evals/">Hamel Husain's product eval workflow</a>.
+        Ask follow-up questions whenever a distinction feels unclear.
+      </footer>
+    </main>
+  </body>
+</html>
