@@ -40,6 +40,20 @@
           <p>A deterministic check such as exact matching, schema validation, numeric comparison, or a unit test.</p>
         </div>
         <div class="card">
+          <h3>Level 1 assertion</h3>
+          <p>
+            A fast, cheap code-based check on model output—Hamel Husain’s “LLM unit test.”
+            It catches obvious regressions; it does not replace model or human judgment for nuanced quality.
+          </p>
+        </div>
+        <div class="card">
+          <h3>Synthetic fixture</h3>
+          <p>
+            A deliberately fake, representative task input used for evals.
+            For LocalLab chat: structured panel or trend context, a user question, and labels for required or forbidden content.
+          </p>
+        </div>
+        <div class="card">
           <h3>Model-based grader</h3>
           <p>An LLM applying a rubric to nuanced output. It scales subjective review but must be calibrated against humans.</p>
         </div>

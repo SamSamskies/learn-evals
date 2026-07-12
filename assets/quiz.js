@@ -14,7 +14,10 @@ document.querySelectorAll("[data-quiz]").forEach((quiz) => {
       feedback.className = `feedback ${isCorrect ? "correct" : "wrong"}`;
       feedback.textContent = isCorrect
         ? `Correct. ${explanation}`
-        : `Try again. Ask whether the criterion can be checked objectively in code.`;
+        : `Try again. ${
+            quiz.dataset.hint ||
+            "Ask whether a computer can decide pass/fail from the answer text alone."
+          }`;
     });
   });
 });

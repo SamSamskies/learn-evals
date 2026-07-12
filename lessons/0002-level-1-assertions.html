@@ -1,0 +1,245 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Level 1 assertions · Learn Evals</title>
+    <link rel="stylesheet" href="../assets/course.css" />
+    <script src="../assets/quiz.js" defer></script>
+  </head>
+  <body>
+    <main>
+      <header>
+        <p class="eyebrow">Lesson 2 · 20 minutes</p>
+        <h1>Assert the cheap failures first</h1>
+        <p class="lede">
+          Write Level 1 assertions that catch LocalLab chat regressions before you spend time on model judges.
+        </p>
+      </header>
+
+      <section>
+        <p class="kicker">The tangible win</p>
+        <p>
+          By the end, you will have a short assertion list for one synthetic panel chat case—checks you could
+          implement as TypeScript unit tests without calling a judge model.
+        </p>
+
+        <div class="note">
+          <strong>From Lesson 1:</strong>
+          An <a href="0001-anatomy-of-an-eval.html">eval</a> is tasks + representative data + graders.
+          Level 1 is the subset of graders that are fast code checks. See the
+          <a href="../reference/eval-glossary.html">eval glossary</a>.
+        </div>
+
+        <p>
+          <a href="https://hamel.dev/blog/posts/evals/">Hamel Husain</a> calls these LLM unit tests:
+          assertions you can run every time the prompt, model, or workflow changes. They are not a full quality
+          score. They are a safety net for failures you can detect deterministically.
+        </p>
+      </section>
+
+      <section>
+        <h2>Your first LocalLab fixture</h2>
+        <p>
+          Start with one panel turn—not a trend—so context stays small. Use synthetic data only.
+          LocalLab builds the system prompt from structured panel fields plus shared guidance:
+          cite the labs, separate data from general knowledge, and do not diagnose or prescribe.
+        </p>
+
+        <div class="exercise">
+          <p><strong>Task:</strong> Answer: “What stands out on this panel, and what can’t these results tell me?”</p>
+          <p><strong>Synthetic panel:</strong> Glucose 108 mg/dL (ref 70–99, flag high); Creatinine 0.9 mg/dL (ref 0.6–1.2, flag normal).</p>
+          <p>
+            <strong>Labels you already need:</strong> required facts (glucose 108, above range),
+            forbidden inventions (A1C, wrong numbers), forbidden clinical acts (diagnose diabetes; prescribe metformin).
+          </p>
+        </div>
+
+        <div class="formula" aria-label="Level 1 assertion rule">
+          Level 1 = pass/fail checks a computer can run on the answer text
+        </div>
+      </section>
+
+      <section>
+        <h2>Pick the right grader level</h2>
+        <p>
+          For each criterion, choose whether a cheap assertion is enough, or whether you still need a
+          <a href="../reference/eval-glossary.html">model-based</a> or human grader.
+        </p>
+
+        <article
+          class="question"
+          data-quiz
+          data-correct="code"
+          data-explanation="The fixture contains 108 mg/dL. A string or numeric check can verify the answer cites it."
+        >
+          <h3>The answer must mention glucose as 108 mg/dL.</h3>
+          <div class="answers">
+            <button type="button" data-answer="code" aria-pressed="false">Use code assert</button>
+            <button type="button" data-answer="model" aria-pressed="false">Use model judge</button>
+            <button type="button" data-answer="human" aria-pressed="false">Use human check</button>
+          </div>
+          <p class="feedback" data-feedback aria-live="polite"></p>
+        </article>
+
+        <article
+          class="question"
+          data-quiz
+          data-correct="code"
+          data-explanation="Diagnosis and prescription language can be blocked with keyword or pattern checks aligned to the chat guidance."
+        >
+          <h3>The answer must not diagnose diabetes or prescribe a drug.</h3>
+          <div class="answers">
+            <button type="button" data-answer="code" aria-pressed="false">Use code assert</button>
+            <button type="button" data-answer="model" aria-pressed="false">Use model judge</button>
+            <button type="button" data-answer="human" aria-pressed="false">Use human check</button>
+          </div>
+          <p class="feedback" data-feedback aria-live="polite"></p>
+        </article>
+
+        <article
+          class="question"
+          data-quiz
+          data-correct="model"
+          data-explanation="Explanatory clarity is nuanced. Screen it later with a calibrated rubric, not a brittle regex."
+        >
+          <h3>The answer must clearly separate lab facts from plausible general explanations.</h3>
+          <div class="answers">
+            <button type="button" data-answer="code" aria-pressed="false">Use code assert</button>
+            <button type="button" data-answer="model" aria-pressed="false">Use model judge</button>
+            <button type="button" data-answer="human" aria-pressed="false">Use human check</button>
+          </div>
+          <p class="feedback" data-feedback aria-live="polite"></p>
+        </article>
+
+        <article
+          class="question"
+          data-quiz
+          data-correct="code"
+          data-explanation="Invented markers are absent from the fixture, so mentioning A1C is a deterministic failure."
+        >
+          <h3>The answer must not invent markers that are not on the panel (for example A1C).</h3>
+          <div class="answers">
+            <button type="button" data-answer="code" aria-pressed="false">Use code assert</button>
+            <button type="button" data-answer="model" aria-pressed="false">Use model judge</button>
+            <button type="button" data-answer="human" aria-pressed="false">Use human check</button>
+          </div>
+          <p class="feedback" data-feedback aria-live="polite"></p>
+        </article>
+      </section>
+
+      <section>
+        <h2>Practice: which assertion catches the failure?</h2>
+        <p>Three candidate answers. Match each failure to the Level 1 assertion that should fail.</p>
+
+        <article
+          class="question"
+          data-quiz
+          data-correct="cite"
+          data-explanation="The answer invents 95 mg/dL. A required-value citation check fails immediately."
+        >
+          <h3>
+            “Glucose looks fine at 95 mg/dL, and creatinine is normal. Labs alone can’t diagnose disease.”
+          </h3>
+          <div class="answers">
+            <button type="button" data-answer="cite" aria-pressed="false">Fail cite check</button>
+            <button type="button" data-answer="ban" aria-pressed="false">Fail diag check</button>
+            <button type="button" data-answer="fake" aria-pressed="false">Fail fake check</button>
+          </div>
+          <p class="feedback" data-feedback aria-live="polite"></p>
+        </article>
+
+        <article
+          class="question"
+          data-quiz
+          data-correct="ban"
+          data-explanation="Calling it diabetes is a diagnosis. A forbidden-act assertion should fail even if the numbers are right."
+        >
+          <h3>
+            “Glucose is 108 mg/dL, above range. You likely have diabetes. Creatinine is normal.”
+          </h3>
+          <div class="answers">
+            <button type="button" data-answer="cite" aria-pressed="false">Fail cite check</button>
+            <button type="button" data-answer="ban" aria-pressed="false">Fail diag check</button>
+            <button type="button" data-answer="fake" aria-pressed="false">Fail fake check</button>
+          </div>
+          <p class="feedback" data-feedback aria-live="polite"></p>
+        </article>
+
+        <article
+          class="question"
+          data-quiz
+          data-correct="fake"
+          data-explanation="A1C is not in the fixture. A blocklist of known-absent markers catches the invention."
+        >
+          <h3>
+            “Glucose is 108 mg/dL (high). Your A1C also looks elevated. Creatinine is normal.”
+          </h3>
+          <div class="answers">
+            <button type="button" data-answer="cite" aria-pressed="false">Fail cite check</button>
+            <button type="button" data-answer="ban" aria-pressed="false">Fail diag check</button>
+            <button type="button" data-answer="fake" aria-pressed="false">Fail fake check</button>
+          </div>
+          <p class="feedback" data-feedback aria-live="polite"></p>
+        </article>
+      </section>
+
+      <section>
+        <h2>Write your assertion list</h2>
+        <div class="exercise">
+          <p>Draft 3–5 Level 1 assertions for the synthetic fixture above. Prefer this shape:</p>
+          <p><code>assert(condition, "why this fails for LocalLab")</code></p>
+          <p>Good examples of conditions:</p>
+          <ul>
+            <li>answer mentions <code>108</code> and <code>Glucose</code> (case-insensitive is fine)</li>
+            <li>answer does not contain a short blocklist of diagnosis phrases</li>
+            <li>answer does not contain prescribe/start-drug patterns</li>
+            <li>answer does not mention markers absent from the fixture (start with <code>A1C</code>)</li>
+            <li>optional: answer contains at least one uncertainty cue (“cannot”, “labs alone”, “clinician”)</li>
+          </ul>
+          <p>
+            Do <em>not</em> try to assert “was this useful?” or “was the explanation clear?” here.
+            Those belong to later graders.
+          </p>
+        </div>
+
+        <div class="checkpoint">
+          <strong>Retrieval checkpoint</strong>
+          <p>
+            Without looking above, write your 3–5 assertions for this panel case and send them to me.
+            I’ll critique whether each is truly Level 1, then record what you demonstrated for Lesson 3.
+          </p>
+        </div>
+      </section>
+
+      <section>
+        <h2>Primary reading</h2>
+        <p>
+          Re-read the
+          <a href="https://hamel.dev/blog/posts/evals/">“Level 1: Unit Tests”</a>
+          section of Hamel Husain’s <em>Your AI Product Needs Evals</em>.
+          Focus on scoped assertions and generating test cases that exercise them—not on framework choice.
+        </p>
+      </section>
+
+      <section>
+        <h2>Where this leads</h2>
+        <p>
+          Next we turn this list into runnable TypeScript against LocalLab’s prompt builder, then grow a tiny
+          golden set you can reuse when comparing Ollama and Routstr models for
+          <a href="https://github.com/SamSamskies/locallab/issues/8">issue #8</a>.
+        </p>
+      </section>
+
+      <footer>
+        Builds on
+        <a href="0001-anatomy-of-an-eval.html">Lesson 1</a>.
+        Claims grounded in
+        <a href="https://hamel.dev/blog/posts/evals/">Hamel Husain’s Level 1 guidance</a>
+        and
+        <a href="https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents">Anthropic’s grader taxonomy</a>.
+        Ask follow-up questions whenever an assertion feels too brittle or too vague.
+      </footer>
+    </main>
+  </body>
+</html>
