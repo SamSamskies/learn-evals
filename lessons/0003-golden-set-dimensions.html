@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Golden set dimensions · Learn Evals</title>
+    <link rel="stylesheet" href="../assets/course.css" />
+    <script src="../assets/quiz.js" defer></script>
+  </head>
+  <body>
+    <main>
+      <header>
+        <p class="eyebrow">Lesson 3 · 20 minutes</p>
+        <h1>Grow coverage by dimensions</h1>
+        <p class="lede">
+          Turn one Level 1 fixture into a tiny golden set that can catch regressions across different panel-chat pressures.
+        </p>
+      </header>
+
+      <section>
+        <p class="kicker">The tangible win</p>
+        <p>
+          By the end, you will specify two new synthetic panel-chat cases—each with a user question, panel sketch,
+          and which assertions are shared vs fixture-specific—ready to add beside your existing glucose case.
+        </p>
+
+        <div class="note">
+          <strong>You already shipped Lesson 2 in LocalLab:</strong>
+          one fixture, six Level 1 assertions, and Vitest coverage of canned pass/fail answers.
+          That proves the graders. It does not yet prove the
+          <a href="../reference/eval-glossary.html">dataset</a>
+          is representative. See the
+          <a href="../reference/eval-glossary.html">golden dataset</a>
+          entry.
+        </div>
+
+        <div class="formula" aria-label="Golden set rule">
+          golden set = few trusted cases × distinct failure pressures
+        </div>
+
+        <p>
+          <a href="https://hamel.dev/blog/posts/evals/">Hamel Husain</a>’s next step after assertions is
+          <em>create test cases</em> that trigger the scenarios you care about. Synthetic inputs are valid when you
+          lack production traces—especially under LocalLab’s privacy constraint. “Golden” means curated and trusted
+          for comparison, not large.
+        </p>
+      </section>
+
+      <section>
+        <h2>Shared checks vs fixture-specific checks</h2>
+        <p>
+          Your current suite has both kinds. Before adding cases, split them so you don’t copy
+          <code>mentions-glucose-108</code> onto a panel that has no glucose finding.
+        </p>
+
+        <div class="cards">
+          <article class="card">
+            <h3>Shared (policy)</h3>
+            <p>
+              No diabetes diagnosis; no metformin prescribe; no invented A1C-style markers absent from
+              <em>that</em> fixture; often an uncertainty cue when the question asks for limits.
+            </p>
+          </article>
+          <article class="card">
+            <h3>Fixture-specific</h3>
+            <p>
+              Cite the out-of-range marker and value; state above/below range in language that matches
+              <em>this</em> panel’s facts.
+            </p>
+          </article>
+          <article class="card">
+            <h3>Per-case labels</h3>
+            <p>
+              Each golden case needs its own required facts and absent-marker blocklist—not a single global regex
+              list.
+            </p>
+          </article>
+        </div>
+
+        <article
+          class="question"
+          data-quiz
+          data-correct="shared"
+          data-explanation="Diagnosis/prescription bans come from CHAT_GUIDANCE and apply to every panel-chat reply."
+          data-hint="Ask whether the check depends on this panel’s numbers or on LocalLab’s standing rules."
+        >
+          <h3>You add an all-normal CMP. Which kind of check can reuse the diabetes/metformin patterns as-is?</h3>
+          <div class="answers">
+            <button type="button" data-answer="shared" aria-pressed="false">Reuse shared policy</button>
+            <button type="button" data-answer="valued" aria-pressed="false">Reuse value cite</button>
+            <button type="button" data-answer="judge" aria-pressed="false">Reuse model judge</button>
+          </div>
+          <p class="feedback" data-feedback aria-live="polite"></p>
+        </article>
+
+        <article
+          class="question"
+          data-quiz
+          data-correct="rewrite"
+          data-explanation="Citation checks are bound to the fixture’s markers and values; rewrite them per case."
+          data-hint="Ask whether the check depends on this panel’s numbers or on LocalLab’s standing rules."
+        >
+          <h3>What should happen to <code>mentions-glucose-108</code> on a panel with only normal creatinine?</h3>
+          <div class="answers">
+            <button type="button" data-answer="keepit" aria-pressed="false">Keep the same check</button>
+            <button type="button" data-answer="rewrite" aria-pressed="false">Rewrite for this case</button>
+            <button type="button" data-answer="delete" aria-pressed="false">Delete all Level 1</button>
+          </div>
+          <p class="feedback" data-feedback aria-live="polite"></p>
+        </article>
+      </section>
+
+      <section>
+        <h2>Pick cases by pressure, not by volume</h2>
+        <p>
+          Three cases that stress different failure modes beat ten near-duplicates of “glucose is high.”
+          For LocalLab panel chat, useful dimensions include:
+        </p>
+        <ul>
+          <li><strong>Panel state</strong> — out-of-range finding vs all-normal vs mixed flags</li>
+          <li><strong>Question pressure</strong> — open “what stands out?” vs leading “do I have diabetes?”</li>
+          <li><strong>Invention risk</strong> — user or model tempted to mention absent markers (A1C, TSH, …)</li>
+        </ul>
+
+        <p>You already cover one cell of that grid:</p>
+        <div class="exercise">
+          <p><strong>Case A (shipped):</strong> Glucose 108 high + creatinine normal; question asks what stands out and what labs can’t tell you.</p>
+          <p><strong>Pressures covered:</strong> cite abnormal value; avoid diagnose/prescribe; avoid inventing A1C; surface uncertainty.</p>
+        </div>
+
+        <article
+          class="question"
+          data-quiz
+          data-correct="leadq"
+          data-explanation="A leading diagnosis question stresses the same policy under different user pressure—new coverage, still Level 1."
+          data-hint="Prefer a case that changes failure pressure, not one that only renames the same high glucose story."
+        >
+          <h3>Which second case adds the most new coverage for LocalLab safety?</h3>
+          <div class="answers">
+            <button type="button" data-answer="twin" aria-pressed="false">Glucose 109, same question</button>
+            <button type="button" data-answer="leadq" aria-pressed="false">High glucose, “Am I diabetic?”</button>
+            <button type="button" data-answer="pdfx" aria-pressed="false">PDF extract of the same panel</button>
+          </div>
+          <p class="feedback" data-feedback aria-live="polite"></p>
+        </article>
+
+        <article
+          class="question"
+          data-quiz
+          data-correct="normal"
+          data-explanation="All-normal panels catch overclaiming and invented problems—failures Case A barely exercises."
+          data-hint="Ask which panel state your current fixture never presents."
+        >
+          <h3>Which third case best complements Case A and a leading-diagnosis case?</h3>
+          <div class="answers">
+            <button type="button" data-answer="normal" aria-pressed="false">All-normal panel, “All good?”</button>
+            <button type="button" data-answer="samehi" aria-pressed="false">Same high glucose again</button>
+            <button type="button" data-answer="routstr" aria-pressed="false">Routstr cost spreadsheet</button>
+          </div>
+          <p class="feedback" data-feedback aria-live="polite"></p>
+        </article>
+      </section>
+
+      <section>
+        <h2>Practice: sketch two cases</h2>
+        <div class="exercise">
+          <p>Draft <strong>Case B</strong> and <strong>Case C</strong> for LocalLab. For each, write:</p>
+          <ol>
+            <li>Synthetic panel (2–4 markers, flags, values)—fake data only</li>
+            <li>User question (one sentence)</li>
+            <li>Dimensions covered (panel state / question pressure / invention risk)</li>
+            <li>Fixture-specific Level 1 checks (cite what? forbid which absent markers?)</li>
+            <li>Shared policy checks you will reuse unchanged</li>
+          </ol>
+          <p>
+            Prefer cases that would fail different assertions if the model slipped—not two paraphrases of Case A.
+            Stay in panel chat; trend chat comes later.
+          </p>
+        </div>
+
+        <div class="checkpoint">
+          <strong>Retrieval checkpoint</strong>
+          <p>
+            Without looking above, send me Case B and Case C in the five-field shape.
+            I’ll critique coverage overlap and whether each check is still truly Level 1 before you implement them.
+          </p>
+        </div>
+      </section>
+
+      <section>
+        <h2>Primary reading</h2>
+        <p>
+          Read
+          <a href="https://hamel.dev/blog/posts/evals/#step-2-create-test-cases">“Step 2: Create Test Cases”</a>
+          in Hamel Husain’s <em>Your AI Product Needs Evals</em>.
+          Focus on synthetic cases that are challenging and representative—not on generating dozens of near-duplicates.
+        </p>
+      </section>
+
+      <section>
+        <h2>Where this leads</h2>
+        <p>
+          After these cases land in LocalLab, the next lesson wires a tiny
+          <a href="../reference/eval-glossary.html">eval harness</a>:
+          call <code>generateChatReply</code> (or equivalent) once per golden case, run Level 1 graders on live
+          output, and track pass rate across Ollama models—the acceptance spine for
+          <a href="https://github.com/SamSamskies/locallab/issues/8">issue #8</a>.
+        </p>
+      </section>
+
+      <footer>
+        Builds on
+        <a href="0002-level-1-assertions.html">Lesson 2</a>.
+        Claims grounded in
+        <a href="https://hamel.dev/blog/posts/evals/">Hamel’s test-case guidance</a>
+        and the
+        <a href="../reference/eval-glossary.html">eval glossary</a>.
+        Ask follow-up questions whenever two cases feel redundant or a check stops being deterministic.
+      </footer>
+    </main>
+  </body>
+</html>
