@@ -63,7 +63,24 @@
         </div>
         <div class="card">
           <h3>Eval harness</h3>
-          <p>The infrastructure that runs tasks, records outputs, applies graders, and aggregates results.</p>
+          <p>
+            The infrastructure that runs tasks end-to-end, records outputs (and optionally transcripts), applies
+            graders, and aggregates results. Prefer production-parity paths so you evaluate the real product loop.
+          </p>
+        </div>
+        <div class="card">
+          <h3>Eval suite</h3>
+          <p>
+            A collection of related tasks that share a broad goal—for LocalLab, “Level 1 panel-chat safety and
+            grounding” is one suite.
+          </p>
+        </div>
+        <div class="card">
+          <h3>Transcript</h3>
+          <p>
+            The full record of a trial (prompt, messages, model answer). Read failing transcripts before changing
+            prompts or graders; pass rate alone hides false graders.
+          </p>
         </div>
         <div class="card">
           <h3>Regression eval</h3>

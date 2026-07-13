@@ -1,0 +1,235 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Live eval harness · Learn Evals</title>
+    <link rel="stylesheet" href="../assets/course.css" />
+    <script src="../assets/quiz.js" defer></script>
+  </head>
+  <body>
+    <main>
+      <header>
+        <p class="eyebrow">Lesson 4 · 25 minutes</p>
+        <h1>Score live replies, not canned ones</h1>
+        <p class="lede">
+          Wire your three golden cases through LocalLab’s real chat path and grade the model’s answer with Level 1.
+        </p>
+      </header>
+
+      <section>
+        <p class="kicker">The tangible win</p>
+        <p>
+          By the end, you will have a gated Vitest suite that, for each Level 1 case, builds the production system
+          prompt, calls <code>generateChatReply</code>, runs <code>evaluatePanelChatLevel1</code>, and prints pass
+          rate—ready to compare Ollama models later.
+        </p>
+
+        <div class="note">
+          <strong>You already shipped Lesson 3 in LocalLab:</strong>
+          three orthogonal fixtures (<code>glucose-high</code>, <code>all-normal-cbc</code>,
+          <code>elevated-tsh-leading</code>), shared vs fixture-specific assertions, and canned-answer Vitest.
+          Graders and dataset exist. What’s missing is the
+          <a href="../reference/eval-glossary.html">eval harness</a>
+          that drives the live agent.
+        </div>
+
+        <div class="formula" aria-label="Harness loop">
+          harness = run task → record answer → grade → aggregate
+        </div>
+
+        <p>
+          <a href="https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents"
+            >Anthropic</a
+          >
+          defines an evaluation harness as the infrastructure that runs tasks end-to-end, records the work, applies
+          graders, and aggregates results. Your canned tests proved the graders. A live harness proves whether a
+          <em>model + prompt path</em> still satisfies them.
+        </p>
+      </section>
+
+      <section>
+        <h2>Production parity beats a toy caller</h2>
+        <p>
+          Anthropic’s hard rule: the agent under eval should behave roughly like the agent in production. In LocalLab
+          that means reuse what the product already uses—not a one-off prompt string paste.
+        </p>
+
+        <div class="cards">
+          <article class="card">
+            <h3>Build prompt</h3>
+            <p>
+              <code>buildChatSystemPrompt({ type: "panel", panel })</code> with each case’s synthetic panel.
+            </p>
+          </article>
+          <article class="card">
+            <h3>Generate</h3>
+            <p>
+              <code>generateChatReply(systemPrompt, [], userMessage, onToken, model)</code> — empty history per case.
+            </p>
+          </article>
+          <article class="card">
+            <h3>Grade</h3>
+            <p>
+              <code>evaluatePanelChatLevel1(answer, level1Case)</code> — same Level 1 checks you already trust.
+            </p>
+          </article>
+        </div>
+
+        <article
+          class="question"
+          data-quiz
+          data-correct="prod"
+          data-explanation="Parity means the same prompt builder and reply path as production, not a shortcut prompt."
+          data-hint="Ask which option evaluates the system users actually hit."
+        >
+          <h3>Which live call gives you the most trustworthy Level 1 signal?</h3>
+          <div class="answers">
+            <button type="button" data-answer="prod" aria-pressed="false">Reuse product chat path</button>
+            <button type="button" data-answer="rawx" aria-pressed="false">Write a custom prompt</button>
+            <button type="button" data-answer="http" aria-pressed="false">Call HTTP chat route</button>
+          </div>
+          <p class="feedback" data-feedback aria-live="polite"></p>
+        </article>
+
+        <article
+          class="question"
+          data-quiz
+          data-correct="fresh"
+          data-explanation="Shared history couples trials; Anthropic isolates each trial so failures stay attributable."
+          data-hint="Ask whether leftover messages from case A should influence case B."
+        >
+          <h3>How should chat history look when you start each golden case?</h3>
+          <div class="answers">
+            <button type="button" data-answer="fresh" aria-pressed="false">Empty history every case</button>
+            <button type="button" data-answer="reuse" aria-pressed="false">Reuse prior case thread</button>
+            <button type="button" data-answer="store" aria-pressed="false">Load past chatStore rows</button>
+          </div>
+          <p class="feedback" data-feedback aria-live="polite"></p>
+        </article>
+      </section>
+
+      <section>
+        <h2>Gate live runs; keep canned always green</h2>
+        <p>
+          Live Ollama calls are slow, flaky without a daemon, and unsuitable as an unconditional CI gate yet. Keep
+          your canned assertion tests always-on. Put live scoring behind an explicit opt-in.
+        </p>
+
+        <div class="exercise">
+          <p><strong>Pattern:</strong></p>
+          <ol>
+            <li>Keep existing canned pass/fail tests unchanged (they guard grader correctness).</li>
+            <li>
+              Add a second <code>describe</code> (e.g. “panel chat Level 1 live”) that skips unless
+              <code>process.env.LOCALLAB_LIVE_EVAL === "1"</code>.
+            </li>
+            <li>
+              Read model from <code>process.env.LOCALLAB_EVAL_MODEL</code> (or your usual Ollama default) and fail
+              loudly if unset when live mode is on.
+            </li>
+            <li>
+              Raise Vitest timeout for that block (LLM replies often need tens of seconds).
+            </li>
+            <li>
+              On failure, log the full answer text—Anthropic’s “read the transcripts” rule starts here.
+            </li>
+          </ol>
+        </div>
+
+        <article
+          class="question"
+          data-quiz
+          data-correct="gate"
+          data-explanation="Live model calls need an opt-in gate; canned grader tests should still run every time."
+          data-hint="Ask which setup protects CI when Ollama is offline without losing grader coverage."
+        >
+          <h3>What is the right default for live Level 1 in CI today?</h3>
+          <div class="answers">
+            <button type="button" data-answer="gate" aria-pressed="false">Opt-in via env flag</button>
+            <button type="button" data-answer="alwy" aria-pressed="false">Always call Ollama live</button>
+            <button type="button" data-answer="drop" aria-pressed="false">Delete canned unit tests</button>
+          </div>
+          <p class="feedback" data-feedback aria-live="polite"></p>
+        </article>
+      </section>
+
+      <section>
+        <h2>One trial is enough to start; expect noise</h2>
+        <p>
+          Models vary run to run. Anthropic separates
+          <a href="../reference/eval-glossary.html">trials</a>
+          from tasks for that reason. For this lesson, one trial per case is enough to stand up the loop. If a case
+          flickers, treat that as signal: either harden the assertion, fix the prompt, or plan multi-trial metrics
+          later—not an excuse to abandon Level 1.
+        </p>
+        <p>
+          Aggregate simply for now: <em>cases with every assertion passing / cases run</em>, and list which assertion
+          ids failed. Pass rate without failing assertion ids is a vanity number.
+        </p>
+      </section>
+
+      <section>
+        <h2>Practice: wire the live harness</h2>
+        <div class="exercise">
+          <p>In LocalLab, add a gated live block that loops <code>PANEL_CHAT_LEVEL1_CASES</code>:</p>
+          <ol>
+            <li>
+              <code>buildChatSystemPrompt({ type: "panel", panel: level1Case.panel })</code>
+            </li>
+            <li>
+              <code>await generateChatReply(…, [], level1Case.userMessage, noopToken, model)</code>
+            </li>
+            <li>
+              Expect <code>evaluatePanelChatLevel1(answer, level1Case).every((r) =&gt; r.pass)</code>
+            </li>
+            <li>On fail, console log case id, failing assertion ids, and the raw answer</li>
+          </ol>
+          <p>
+            Run with your env flag + model set against one Ollama model you already use for chat. Stay on panel
+            chat only. Do not add a model judge yet.
+          </p>
+        </div>
+
+        <div class="checkpoint">
+          <strong>Retrieval checkpoint</strong>
+          <p>
+            Without pasting the whole file, tell me: (1) how you gated the live tests, (2) pass/fail per case id for
+            one model, (3) for any failure, the assertion id and a one-line guess whether the bug is prompt, model, or
+            over-strict regex. I’ll help you decide what to fix first.
+          </p>
+        </div>
+      </section>
+
+      <section>
+        <h2>Primary reading</h2>
+        <p>
+          Read the “Design the eval harness and graders” section in
+          <a href="https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents"
+            >Anthropic: Demystifying evals for AI agents</a
+          >.
+          Focus on production parity and reading transcripts—not on adopting a third-party eval platform.
+        </p>
+      </section>
+
+      <section>
+        <h2>Where this leads</h2>
+        <p>
+          Once live Level 1 runs on demand, you can compare Ollama models (and later Routstr candidates for
+          <a href="https://github.com/SamSamskies/locallab/issues/8">issue #8</a>)
+          on the same golden set—quality first, then latency and cost.
+        </p>
+      </section>
+
+      <footer>
+        Builds on
+        <a href="0003-golden-set-dimensions.html">Lesson 3</a>.
+        Claims grounded in
+        <a href="https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents">Anthropic’s harness guidance</a>
+        and the
+        <a href="../reference/eval-glossary.html">eval glossary</a>.
+        Ask follow-up questions whenever a live fail looks like a bad assertion rather than a bad reply.
+      </footer>
+    </main>
+  </body>
+</html>
