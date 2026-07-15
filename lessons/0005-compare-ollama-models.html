@@ -1,0 +1,213 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Compare Ollama models · Learn Evals</title>
+    <link rel="stylesheet" href="../assets/course.css" />
+    <script src="../assets/quiz.js" defer></script>
+  </head>
+  <body>
+    <main>
+      <header>
+        <p class="eyebrow">Lesson 5 · 25 minutes</p>
+        <h1>Compare models on one fixed suite</h1>
+        <p class="lede">
+          Run the same Level 1 golden set against two Ollama models and pick a default with evidence—not vibes.
+        </p>
+      </header>
+
+      <section>
+        <p class="kicker">The tangible win</p>
+        <p>
+          By the end, you will have a filled
+          <a href="../reference/model-comparison-card.html">model comparison card</a>
+          for at least two Ollama models: pass rate, failing assertion ids, and suite wall-clock—enough to choose a
+          LocalLab chat default for panel Level 1.
+        </p>
+
+        <div class="note">
+          <strong>You already shipped Lesson 4 and recalibrated assertions:</strong>
+          live harness exists, and <code>gemma4:26b</code> clears the three cases. That green run is a
+          <a href="../reference/eval-glossary.html">baseline</a>, not the finish line. The mission needs a repeatable
+          way to compare Ollama (and later Routstr) candidates for
+          <a href="https://github.com/SamSamskies/locallab/issues/8">issue #8</a>.
+        </div>
+
+        <div class="formula" aria-label="Fair comparison rule">
+          fair compare = same suite + same graders + one changed model
+        </div>
+
+        <p>
+          <a href="https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents">Anthropic</a>
+          notes that evals turn model upgrades from weeks of guess-and-check into days: once you have a static task
+          bank, you get baselines for pass rate, latency, and (when relevant) cost for free. LocalLab already has the
+          bank—this lesson is the comparison ritual.
+        </p>
+      </section>
+
+      <section>
+        <h2>Change one variable</h2>
+        <p>
+          When you evaluate “a chat model,” you are really scoring
+          <em>harness + prompt + model</em> together. For a fair model bake-off, freeze the harness, golden cases, and
+          Level 1 graders. Only <code>OLLAMA_MODEL</code> (or <code>--model</code>) changes between runs.
+        </p>
+
+        <div class="cards">
+          <article class="card">
+            <h3>Quality</h3>
+            <p>Cases passed / 3, plus failing assertion ids—not a vanity average alone.</p>
+          </article>
+          <article class="card">
+            <h3>Latency</h3>
+            <p>Wall-clock for the suite (and per case if you log it). User-facing feel lives here.</p>
+          </article>
+          <article class="card">
+            <h3>Cost</h3>
+            <p>Local Ollama ≈ free money; still practice the axis so Routstr rows can use the same card.</p>
+          </article>
+        </div>
+
+        <article
+          class="question"
+          data-quiz
+          data-correct="hold"
+          data-explanation="Fair model comparison freezes cases, graders, and harness; only the model id changes."
+          data-hint="Ask which option isolates the model as the only independent variable."
+        >
+          <h3>During a two-model Level 1 bake-off, what stays fixed?</h3>
+          <div class="answers">
+            <button type="button" data-answer="hold" aria-pressed="false">Same cases and graders</button>
+            <button type="button" data-answer="swap" aria-pressed="false">New cases each model</button>
+            <button type="button" data-answer="edit" aria-pressed="false">Tweaked prompts mid run</button>
+          </div>
+          <p class="feedback" data-feedback aria-live="polite"></p>
+        </article>
+      </section>
+
+      <section>
+        <h2>Quality before speed</h2>
+        <p>
+          Anthropic separates
+          <a href="../reference/eval-glossary.html">capability</a>
+          and
+          <a href="../reference/eval-glossary.html">regression</a>
+          evals. Your Level 1 suite is graduating toward regression for a capable model: near-100% pass means “still
+          safe and grounded.” A smaller/faster model that fails invent or false-abnormality asserts is a capability
+          miss—not a timing win.
+        </p>
+        <p>
+          <a href="https://hamel.dev/blog/posts/evals-faq/">Hamel</a>
+          warns against treating model switching as the first improvement lever without error analysis. You already did
+          that analysis on live fails. Now model comparison is on-mission: provider and size choice with evidence.
+        </p>
+
+        <article
+          class="question"
+          data-quiz
+          data-correct="qlty"
+          data-explanation="Mission order is quality (pass rate + failing ids), then latency, then cost—especially before Routstr."
+          data-hint="Ask which metric disqualifies a model before wall-clock matters."
+        >
+          <h3>How should you rank the three axes for LocalLab chat defaults?</h3>
+          <div class="answers">
+            <button type="button" data-answer="qlty" aria-pressed="false">Pass rate then latency</button>
+            <button type="button" data-answer="sped" aria-pressed="false">Latency then pass rate</button>
+            <button type="button" data-answer="cash" aria-pressed="false">Cost before pass rate</button>
+          </div>
+          <p class="feedback" data-feedback aria-live="polite"></p>
+        </article>
+
+        <article
+          class="question"
+          data-quiz
+          data-correct="miss"
+          data-explanation="If a smaller model fails Level 1 while a larger one passes on the same suite, that is a capability gap—not a broken harness."
+          data-hint="Ask whether the suite stopped being trustworthy when the weak model failed."
+        >
+          <h3>Small model fails invent checks; large model passes. Best read?</h3>
+          <div class="answers">
+            <button type="button" data-answer="miss" aria-pressed="false">Model lacks capability</button>
+            <button type="button" data-answer="bust" aria-pressed="false">Harness is defective</button>
+            <button type="button" data-answer="soft" aria-pressed="false">Assertions must loosen</button>
+          </div>
+          <p class="feedback" data-feedback aria-live="polite"></p>
+        </article>
+      </section>
+
+      <section>
+        <h2>Practice: fill two comparison rows</h2>
+        <div class="exercise">
+          <p>In LocalLab, keep the harness as-is. Run:</p>
+          <ol>
+            <li>
+              <code>npm run test:live-eval -- --model gemma4:26b</code>
+              (your known-green baseline)
+            </li>
+            <li>
+              The same command with one contrast model you actually care about (smaller/faster, or another default
+              candidate). Raise <code>--timeout-ms</code> if needed.
+            </li>
+            <li>
+              Optional but useful: log elapsed ms per case (or note suite wall-clock from the Vitest summary) so latency
+              is evidence, not a feeling.
+            </li>
+            <li>
+              Fill two rows on the
+              <a href="../reference/model-comparison-card.html">comparison card</a>:
+              pass rate, failing assertion ids, wall-clock, one-sentence decision note.
+            </li>
+          </ol>
+          <p>
+            Do not change assertions mid-bake-off. Do not add a model judge yet. Stay on panel Level 1 only.
+          </p>
+        </div>
+
+        <div class="checkpoint">
+          <strong>Retrieval checkpoint</strong>
+          <p>
+            Tell me: (1) the two model ids, (2) pass rate and failing assertion ids for each, (3) which you’d set as
+            LocalLab’s panel-chat default and why in one sentence. I’ll help you pressure-test the decision before
+            Routstr enters the card.
+          </p>
+        </div>
+      </section>
+
+      <section>
+        <h2>Primary reading</h2>
+        <p>
+          In
+          <a href="https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents"
+            >Anthropic: Demystifying evals for AI agents</a
+          >,
+          read the sections on why evals speed model adoption and on capability vs regression evals. Skim Hamel’s FAQ
+          answer
+          <a href="https://hamel.dev/blog/posts/evals-faq/">“How much time should I spend on model selection?”</a>
+          so you keep error analysis upstream of endless model shopping.
+        </p>
+      </section>
+
+      <section>
+        <h2>Where this leads</h2>
+        <p>
+          Once Ollama defaults are chosen with a comparison card, you can add latency/cost rows for Routstr private
+          models against the same golden set—and treat Level 1 as an acceptance gate for issue #8 instead of a demo.
+        </p>
+      </section>
+
+      <footer>
+        Builds on
+        <a href="0004-live-eval-harness.html">Lesson 4</a>.
+        Claims grounded in
+        <a href="https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents">Anthropic</a>,
+        <a href="https://hamel.dev/blog/posts/evals-faq/">Hamel’s evals FAQ</a>,
+        the
+        <a href="../reference/eval-glossary.html">eval glossary</a>,
+        and the
+        <a href="../reference/model-comparison-card.html">comparison card</a>.
+        Ask follow-up questions if a “faster” model looks green only because an assertion drifted.
+      </footer>
+    </main>
+  </body>
+</html>

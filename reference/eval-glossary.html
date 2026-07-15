@@ -86,6 +86,27 @@
           <h3>Regression eval</h3>
           <p>A suite asking whether the system still handles behavior it previously handled reliably.</p>
         </div>
+        <div class="card">
+          <h3>Capability eval</h3>
+          <p>
+            A suite asking what the system can do well—often starting at a lower pass rate so the team has a hill to
+            climb. After high pass rates, capability tasks can graduate into the regression suite.
+          </p>
+        </div>
+        <div class="card">
+          <h3>Baseline</h3>
+          <p>
+            A recorded result on a fixed suite (pass rate, failing assertion ids, latency, later cost) used as the
+            comparison point when changing model, prompt, or harness.
+          </p>
+        </div>
+        <div class="card">
+          <h3>Model comparison</h3>
+          <p>
+            Running the same tasks, graders, and harness while varying only the model. Quality first; then latency
+            and cost. For LocalLab: same Level 1 golden set across Ollama (and later Routstr) candidates.
+          </p>
+        </div>
       </section>
 
       <footer>
