@@ -9,7 +9,7 @@
 - After Lesson 4, live harness exists (`generateChatReply` + Level 1, gated via `test:live-eval`).
 - Learner recalibrated assertions after invent/false-range fails; live suite passes on `gemma4:26b`.
 - Lesson 5 done: `gemma4:26b` 3/3 (74 s) vs `medgemma1.5:latest` 2/3 (49 s, fails `no-hypothyroid-diagnosis`). Default Ollama panel pick = gemma4. Learner shipped `compare-live-evals` skill for card reports under `evals/comparisons/`.
-- Lesson 6 = prompt-version bake-off on fixed `gemma4:26b` + Level 1 (vary only system guidance / prompt construction). Fair compare: freeze cases, graders, model; change one prompt variant.
+- Lesson 6 = prompt-version bake-off on fixed `medgemma1.5:latest` + Level 1 (workbench with known `no-hypothyroid-diagnosis` fail). gemma4 remains product default—spot-check any shipped prompt variant on gemma4. Fair compare: freeze cases, graders, model; change one prompt variant.
 - Prefer gating live evals behind an env flag so default `vitest run` stays offline-safe.
 - Do not teach “dilute assertions until green”; diagnose prompt vs model vs over-strict check first.
 - Fair compare rule: freeze cases + graders + two of {model, prompt}; vary exactly one axis.

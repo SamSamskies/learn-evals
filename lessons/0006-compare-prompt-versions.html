@@ -13,22 +13,27 @@
         <p class="eyebrow">Lesson 6 · 25 minutes</p>
         <h1>Change the prompt, not the model</h1>
         <p class="lede">
-          Hold <code>gemma4:26b</code> and Level 1 fixed. Ship a prompt change only if the suite still clears—or fails for reasons you accept.
+          Hold <code>medgemma1.5:latest</code> and Level 1 fixed. Aim the variant at a known fail—then decide with evidence.
         </p>
       </header>
 
       <section>
         <p class="kicker">The tangible win</p>
         <p>
-          By the end, you will run Level 1 twice on the same model—baseline guidance vs one deliberate prompt variant—fill two rows on the
+          By the end, you will run Level 1 twice on <code>medgemma1.5:latest</code>—baseline guidance vs one deliberate
+          prompt variant—fill two rows on the
           <a href="../reference/model-comparison-card.html">comparison card</a>
-          (label the prompt version), and decide which guidance stays in LocalLab.
+          (label the prompt version), and decide whether the variant helped that failure without making Level 1 worse.
         </p>
 
         <div class="note">
-          <strong>You already locked an Ollama default:</strong>
-          <code>gemma4:26b</code> cleared 3/3; shopping more models is optional. The mission is to change
-          <em>prompts</em> with evidence too. Remote Routstr is out of scope—keep the loop local and simple.
+          <strong>Why medgemma for this lesson:</strong>
+          <code>gemma4:26b</code> is still your product default (3/3). It often gives no Level 1 signal for a prompt
+          A/B. <code>medgemma1.5:latest</code> already failed
+          <code>elevated-tsh-leading: no-hypothyroid-diagnosis</code>—a
+          <a href="https://hamel.dev/notes/llm/officehours/erroranalysis.html">named failure</a>
+          you can aim a prompt edit at. Freeze medgemma for both runs; if you adopt a variant, spot-check it once on
+          gemma4 before shipping to LocalLab.
         </div>
 
         <div class="formula" aria-label="Fair prompt compare">
@@ -48,8 +53,8 @@
         <p>
           LocalLab’s panel chat quality is mostly
           <code>buildChatSystemPrompt</code> + model. Lesson 5 varied the model. This lesson varies the prompt (for
-          example a sharper “do not diagnose” paragraph, or clearer “cite the user’s numbers first” rule) while
-          <code>OLLAMA_MODEL=gemma4:26b</code> stays put.
+          example a sharper “do not diagnose” paragraph) while
+          <code>OLLAMA_MODEL=medgemma1.5:latest</code> stays put for both runs.
         </p>
 
         <div class="cards">
@@ -59,11 +64,11 @@
           </article>
           <article class="card">
             <h3>Variant</h3>
-            <p>One intentional edit tied to a real worry (safety, grounding, tone).</p>
+            <p>One intentional edit aimed at the TSH diagnosis fail (or another named miss).</p>
           </article>
           <article class="card">
             <h3>Verdict</h3>
-            <p>Pass rate + failing ids; ship only if not worse on Level 1.</p>
+            <p>Pass rate + failing ids; did the named fail clear without new regressions?</p>
           </article>
         </div>
 
@@ -87,10 +92,11 @@
       <section>
         <h2>Edit for a reason, then measure</h2>
         <p>
-          <a href="https://hamel.dev/notes/llm/officehours/erroranalysis.html">Error analysis</a>
-          comes before endless prompt tinkering: name the failure you are trying to reduce. Then change one guidance
-          clause and re-run the suite. If both prompts pass 3/3, read a transcript or two—Level 1 will not catch every
-          tone or usefulness win—but it <em>will</em> catch safety and grounding regressions.
+          Start from the known medgemma miss: over-confident hypothyroid language on
+          <code>elevated-tsh-leading</code>. Tighten one guidance clause, re-run the suite on the same model. If the
+          fail does not move, that is useful too—it may be a
+          <a href="../reference/eval-glossary.html">capability</a>
+          gap, not a wording gap. Do not delete the assertion to manufacture green.
         </p>
         <p>
           <a href="https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents">Anthropic</a>
@@ -132,13 +138,13 @@
       </section>
 
       <section>
-        <h2>Practice: two prompt rows on gemma4</h2>
+        <h2>Practice: two prompt rows on medgemma</h2>
         <div class="exercise">
-          <p>In LocalLab, keep fixtures, asserts, and <code>gemma4:26b</code> fixed:</p>
+          <p>In LocalLab, keep fixtures, asserts, and <code>medgemma1.5:latest</code> fixed:</p>
           <ol>
             <li>
-              Name one failure or risk you want the prompt to address (e.g. over-confident diagnosis language, weak
-              number grounding). One sentence is enough.
+              Aim at the known fail: <code>elevated-tsh-leading: no-hypothyroid-diagnosis</code> (or another medgemma
+              miss you reproduce). One sentence describing the failure is enough.
             </li>
             <li>
               Duplicate or branch <code>CHAT_GUIDANCE</code> / prompt construction so you can run
@@ -146,25 +152,27 @@
               flag, test-only override, or a temporary second export).
             </li>
             <li>
-              Run <code>npm run test:live-eval -- --model gemma4:26b</code> once per prompt version. Record pass rate,
-              failing ids, and wall-clock on the
+              Run <code>npm run test:live-eval -- --model medgemma1.5:latest</code> once per prompt version. Record pass
+              rate, failing ids, and wall-clock on the
               <a href="../reference/model-comparison-card.html">comparison card</a>
               (use the Prompt version field).
             </li>
             <li>
-              Ship decision in one sentence: keep baseline, adopt variant, or revise variant and re-run.
+              Decision in one sentence: keep baseline, adopt variant (then spot-check once on
+              <code>gemma4:26b</code> before shipping), or treat the miss as capability and stop prompt-chasing.
             </li>
           </ol>
           <p>
-            Do not change the model mid-bake-off. Do not loosen asserts to make the variant green.
+            Do not change the model mid-bake-off. Do not loosen asserts to make the variant green. Do not replace
+            gemma4 as the product default just because medgemma is a better teaching workbench.
           </p>
         </div>
 
         <div class="checkpoint">
           <strong>Retrieval checkpoint</strong>
           <p>
-            Tell me: (1) the failure you aimed at, (2) pass rate and failing ids for baseline vs variant, (3) which
-            prompt you keep and why in one sentence. I’ll pressure-test the call.
+            Tell me: (1) the failure you aimed at, (2) pass rate and failing ids for baseline vs variant on medgemma,
+            (3) whether you’d ship the variant (and if yes, gemma4 spot-check result) in one sentence.
           </p>
         </div>
       </section>
