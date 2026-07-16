@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Compare prompt versions · Learn Evals</title>
+    <link rel="stylesheet" href="../assets/course.css" />
+    <script src="../assets/quiz.js" defer></script>
+  </head>
+  <body>
+    <main>
+      <header>
+        <p class="eyebrow">Lesson 6 · 25 minutes</p>
+        <h1>Change the prompt, not the model</h1>
+        <p class="lede">
+          Hold <code>gemma4:26b</code> and Level 1 fixed. Ship a prompt change only if the suite still clears—or fails for reasons you accept.
+        </p>
+      </header>
+
+      <section>
+        <p class="kicker">The tangible win</p>
+        <p>
+          By the end, you will run Level 1 twice on the same model—baseline guidance vs one deliberate prompt variant—fill two rows on the
+          <a href="../reference/model-comparison-card.html">comparison card</a>
+          (label the prompt version), and decide which guidance stays in LocalLab.
+        </p>
+
+        <div class="note">
+          <strong>You already locked an Ollama default:</strong>
+          <code>gemma4:26b</code> cleared 3/3; shopping more models is optional. The mission is to change
+          <em>prompts</em> with evidence too. Remote Routstr is out of scope—keep the loop local and simple.
+        </div>
+
+        <div class="formula" aria-label="Fair prompt compare">
+          fair prompt compare = same cases + same graders + same model + one prompt change
+        </div>
+
+        <p>
+          <a href="https://hamel.dev/blog/posts/evals-faq/">Hamel’s FAQ</a>
+          warns that automated prompt optimizers hill-climb known metrics but do not discover new failures. Your Level 1
+          suite is a known metric bank: use it to verify a <em>human-authored</em> prompt edit aimed at a failure you
+          care about—not to blindly rewrite <code>CHAT_GUIDANCE</code>.
+        </p>
+      </section>
+
+      <section>
+        <h2>One axis: the system guidance</h2>
+        <p>
+          LocalLab’s panel chat quality is mostly
+          <code>buildChatSystemPrompt</code> + model. Lesson 5 varied the model. This lesson varies the prompt (for
+          example a sharper “do not diagnose” paragraph, or clearer “cite the user’s numbers first” rule) while
+          <code>OLLAMA_MODEL=gemma4:26b</code> stays put.
+        </p>
+
+        <div class="cards">
+          <article class="card">
+            <h3>Baseline</h3>
+            <p>Current production <code>CHAT_GUIDANCE</code> / prompt builder.</p>
+          </article>
+          <article class="card">
+            <h3>Variant</h3>
+            <p>One intentional edit tied to a real worry (safety, grounding, tone).</p>
+          </article>
+          <article class="card">
+            <h3>Verdict</h3>
+            <p>Pass rate + failing ids; ship only if not worse on Level 1.</p>
+          </article>
+        </div>
+
+        <article
+          class="question"
+          data-quiz
+          data-correct="hold"
+          data-explanation="Fair prompt A/B freezes cases, graders, and model; only the prompt text (or builder) changes."
+          data-hint="Ask which option isolates the prompt as the only independent variable."
+        >
+          <h3>During a two-prompt Level 1 bake-off, what stays fixed?</h3>
+          <div class="answers">
+            <button type="button" data-answer="hold" aria-pressed="false">Same model and graders</button>
+            <button type="button" data-answer="swap" aria-pressed="false">New model each prompt</button>
+            <button type="button" data-answer="edit" aria-pressed="false">Tweaked cases mid compare</button>
+          </div>
+          <p class="feedback" data-feedback aria-live="polite"></p>
+        </article>
+      </section>
+
+      <section>
+        <h2>Edit for a reason, then measure</h2>
+        <p>
+          <a href="https://hamel.dev/notes/llm/officehours/erroranalysis.html">Error analysis</a>
+          comes before endless prompt tinkering: name the failure you are trying to reduce. Then change one guidance
+          clause and re-run the suite. If both prompts pass 3/3, read a transcript or two—Level 1 will not catch every
+          tone or usefulness win—but it <em>will</em> catch safety and grounding regressions.
+        </p>
+        <p>
+          <a href="https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents">Anthropic</a>
+          treats a static task bank as how you adopt changes quickly. Your bank already exists; this lesson is the
+          prompt half of the ritual you used for models.
+        </p>
+
+        <article
+          class="question"
+          data-quiz
+          data-correct="aim"
+          data-explanation="Change the prompt to address a named failure mode, then verify with the fixed suite—not vibes-only rewrites."
+          data-hint="Ask what should drive the wording change before you hit save."
+        >
+          <h3>Best reason to rewrite chat guidance before re-running Level 1?</h3>
+          <div class="answers">
+            <button type="button" data-answer="aim" aria-pressed="false">Named failure to reduce</button>
+            <button type="button" data-answer="luck" aria-pressed="false">Random wording refresh</button>
+            <button type="button" data-answer="size" aria-pressed="false">Longer prompt always wins</button>
+          </div>
+          <p class="feedback" data-feedback aria-live="polite"></p>
+        </article>
+
+        <article
+          class="question"
+          data-quiz
+          data-correct="keep"
+          data-explanation="If the variant fails invent or diagnosis-forbid asserts the baseline passed, do not ship it."
+          data-hint="Ask which outcome is a regression gate, not a style preference."
+        >
+          <h3>Baseline passes 3/3; variant fails no-hypothyroid-diagnosis. What next?</h3>
+          <div class="answers">
+            <button type="button" data-answer="keep" aria-pressed="false">Keep baseline guidance</button>
+            <button type="button" data-answer="ship" aria-pressed="false">Ship variant anyway</button>
+            <button type="button" data-answer="drop" aria-pressed="false">Delete that assertion</button>
+          </div>
+          <p class="feedback" data-feedback aria-live="polite"></p>
+        </article>
+      </section>
+
+      <section>
+        <h2>Practice: two prompt rows on gemma4</h2>
+        <div class="exercise">
+          <p>In LocalLab, keep fixtures, asserts, and <code>gemma4:26b</code> fixed:</p>
+          <ol>
+            <li>
+              Name one failure or risk you want the prompt to address (e.g. over-confident diagnosis language, weak
+              number grounding). One sentence is enough.
+            </li>
+            <li>
+              Duplicate or branch <code>CHAT_GUIDANCE</code> / prompt construction so you can run
+              <strong>baseline</strong> vs <strong>variant</strong> without editing asserts. Smallest hook wins (env
+              flag, test-only override, or a temporary second export).
+            </li>
+            <li>
+              Run <code>npm run test:live-eval -- --model gemma4:26b</code> once per prompt version. Record pass rate,
+              failing ids, and wall-clock on the
+              <a href="../reference/model-comparison-card.html">comparison card</a>
+              (use the Prompt version field).
+            </li>
+            <li>
+              Ship decision in one sentence: keep baseline, adopt variant, or revise variant and re-run.
+            </li>
+          </ol>
+          <p>
+            Do not change the model mid-bake-off. Do not loosen asserts to make the variant green.
+          </p>
+        </div>
+
+        <div class="checkpoint">
+          <strong>Retrieval checkpoint</strong>
+          <p>
+            Tell me: (1) the failure you aimed at, (2) pass rate and failing ids for baseline vs variant, (3) which
+            prompt you keep and why in one sentence. I’ll pressure-test the call.
+          </p>
+        </div>
+      </section>
+
+      <section>
+        <h2>Primary reading</h2>
+        <p>
+          Read Hamel’s short note on
+          <a href="https://hamel.dev/notes/llm/officehours/erroranalysis.html">error analysis before writing tests</a>
+          and skim the FAQ answer on
+          <a href="https://hamel.dev/blog/posts/evals-faq/">manual prompts vs automated optimizers</a>.
+          Optional: Anthropic on using a static task bank for
+          <a href="https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents"
+            >pass rate / latency baselines when changing the system</a
+          >.
+        </p>
+      </section>
+
+      <section>
+        <h2>Where this leads</h2>
+        <p>
+          Once prompt and model changes share the same Level 1 ritual, you can grow the suite (trend chat, more failure
+          modes) without losing the habit: one axis at a time, evidence before ship.
+        </p>
+      </section>
+
+      <footer>
+        Builds on
+        <a href="0005-compare-ollama-models.html">Lesson 5</a>.
+        Claims grounded in
+        <a href="https://hamel.dev/blog/posts/evals-faq/">Hamel’s evals FAQ</a>,
+        <a href="https://hamel.dev/notes/llm/officehours/erroranalysis.html">error analysis note</a>,
+        <a href="https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents">Anthropic</a>,
+        the
+        <a href="../reference/eval-glossary.html">eval glossary</a>,
+        and the
+        <a href="../reference/model-comparison-card.html">comparison card</a>.
+        Ask follow-up questions if wiring a prompt override for live eval is unclear.
+      </footer>
+    </main>
+  </body>
+</html>

@@ -30,8 +30,7 @@
           <strong>You already shipped Lesson 4 and recalibrated assertions:</strong>
           live harness exists, and <code>gemma4:26b</code> clears the three cases. That green run is a
           <a href="../reference/eval-glossary.html">baseline</a>, not the finish line. The mission needs a repeatable
-          way to compare Ollama (and later Routstr) candidates for
-          <a href="https://github.com/SamSamskies/locallab/issues/8">issue #8</a>.
+          way to compare Ollama candidates before you change prompts with the same ritual.
         </div>
 
         <div class="formula" aria-label="Fair comparison rule">
@@ -65,7 +64,7 @@
           </article>
           <article class="card">
             <h3>Cost</h3>
-            <p>Local Ollama ≈ free money; still practice the axis so Routstr rows can use the same card.</p>
+            <p>Local Ollama ≈ free money; still note latency so feel is evidence, not a vibe.</p>
           </article>
         </div>
 
@@ -107,14 +106,14 @@
           class="question"
           data-quiz
           data-correct="qlty"
-          data-explanation="Mission order is quality (pass rate + failing ids), then latency, then cost—especially before Routstr."
+          data-explanation="Mission order is quality (pass rate + failing ids), then latency—cost is secondary on local Ollama."
           data-hint="Ask which metric disqualifies a model before wall-clock matters."
         >
-          <h3>How should you rank the three axes for LocalLab chat defaults?</h3>
+          <h3>How should you rank the axes for LocalLab chat defaults?</h3>
           <div class="answers">
             <button type="button" data-answer="qlty" aria-pressed="false">Pass rate then latency</button>
             <button type="button" data-answer="sped" aria-pressed="false">Latency then pass rate</button>
-            <button type="button" data-answer="cash" aria-pressed="false">Cost before pass rate</button>
+            <button type="button" data-answer="cash" aria-pressed="false">Wall clock before quality</button>
           </div>
           <p class="feedback" data-feedback aria-live="polite"></p>
         </article>
@@ -169,7 +168,7 @@
           <p>
             Tell me: (1) the two model ids, (2) pass rate and failing assertion ids for each, (3) which you’d set as
             LocalLab’s panel-chat default and why in one sentence. I’ll help you pressure-test the decision before
-            Routstr enters the card.
+            prompt bake-offs on the winner.
           </p>
         </div>
       </section>
@@ -191,8 +190,8 @@
       <section>
         <h2>Where this leads</h2>
         <p>
-          Once Ollama defaults are chosen with a comparison card, you can add latency/cost rows for Routstr private
-          models against the same golden set—and treat Level 1 as an acceptance gate for issue #8 instead of a demo.
+          Once an Ollama default is chosen with a comparison card, run the same Level 1 ritual on prompt versions—vary
+          only the guidance, keep the model fixed—and treat the suite as a regression gate for ship decisions.
         </p>
       </section>
 

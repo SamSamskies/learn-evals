@@ -122,7 +122,7 @@
 
         <p>
           LocalLab's current chat tests verify context construction and conversation storage. They do not run a model
-          or grade answer quality. This eval fills that gap and can run unchanged across Ollama and Routstr models.
+          or grade answer quality. This eval fills that gap and can run unchanged across Ollama model versions.
         </p>
 
         <div class="checkpoint">
@@ -149,10 +149,8 @@
       <section>
         <h2>Where this leads</h2>
         <p>
-          After the suite can compare local models, we will add Routstr support from
-          <a href="https://github.com/SamSamskies/locallab/issues/8">LocalLab issue #8</a>.
-          The same scenarios will show whether a private Routstr model improves quality enough to justify its
-          latency, cost, and non-local data boundary.
+          After the suite can compare local models, the same scenarios become the gate for prompt changes and
+          chat defaults—quality first, then latency—without leaving Ollama.
         </p>
       </section>
 

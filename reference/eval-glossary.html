@@ -103,8 +103,22 @@
         <div class="card">
           <h3>Model comparison</h3>
           <p>
-            Running the same tasks, graders, and harness while varying only the model. Quality first; then latency
-            and cost. For LocalLab: same Level 1 golden set across Ollama (and later Routstr) candidates.
+            Running the same tasks, graders, and prompt while varying only the model. Quality first; then latency.
+            For LocalLab: same Level 1 golden set across Ollama candidates.
+          </p>
+        </div>
+        <div class="card">
+          <h3>Prompt comparison</h3>
+          <p>
+            Running the same tasks, graders, and model while varying only the system prompt (or prompt builder).
+            Ship a prompt change only if Level 1 does not regress on failures you refuse to accept.
+          </p>
+        </div>
+        <div class="card">
+          <h3>Acceptance gate</h3>
+          <p>
+            A fixed suite that must pass (or have explicitly accepted failures) before shipping a model default,
+            prompt change, or workflow switch. For LocalLab panel chat: Level 1 on the golden set.
           </p>
         </div>
       </section>

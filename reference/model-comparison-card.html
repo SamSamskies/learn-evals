@@ -3,16 +3,16 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Model comparison card · Learn Evals</title>
+    <title>Comparison card · Learn Evals</title>
     <link rel="stylesheet" href="../assets/course.css" />
   </head>
   <body>
     <main>
       <header>
         <p class="eyebrow">Reference · Comparison ritual</p>
-        <h1>Model comparison card</h1>
+        <h1>Comparison card</h1>
         <p class="lede">
-          Hold everything fixed except the model. Record quality first, then wall-clock.
+          Hold everything fixed except one axis—model <em>or</em> prompt. Quality first, then wall-clock.
         </p>
       </header>
 
@@ -21,40 +21,45 @@
         <ul>
           <li>Golden cases — same <code>PANEL_CHAT_LEVEL1_CASES</code></li>
           <li>Graders — same Level 1 assertions</li>
-          <li>Harness — same <code>buildChatSystemPrompt</code> + <code>generateChatReply</code></li>
+          <li>Harness path — same live chat entrypoint</li>
           <li>Trial budget — same trials per case (start with 1)</li>
+          <li>The other axis — if comparing prompts, freeze the model; if comparing models, freeze the prompt</li>
         </ul>
       </section>
 
       <section>
-        <h2>Per-model row</h2>
+        <h2>Per-run row</h2>
         <div class="card">
           <p><strong>Model:</strong> _______________</p>
+          <p><strong>Prompt version:</strong> baseline / _______________</p>
           <p><strong>Pass rate:</strong> ___ / 3 cases</p>
           <p><strong>Failing assertion ids:</strong> _______________</p>
           <p><strong>Suite wall-clock:</strong> ____ s</p>
           <p><strong>Decision note (1 sentence):</strong> _______________</p>
         </div>
         <p>
-          For LocalLab Ollama runs, monetary cost is roughly free; still note latency so later Routstr
-          candidates can be scored on the same card with cost added.
+          Local Ollama cost is roughly free—latency still matters for feel. Change only one of model or prompt between
+          rows you intend to compare.
         </p>
       </section>
 
       <section>
         <h2>Decision order</h2>
         <div class="formula" aria-label="Decision order">
-          quality (pass rate + failing ids) → latency → cost
+          quality (pass rate + failing ids) → latency → (cost if ever relevant)
         </div>
         <p>
-          A model that fails grounding or safety asserts is slower-looking but still the wrong default.
-          Prefer a slightly slower model that clears Level 1 over a fast model that invents markers.
+          A prompt or model that fails grounding or safety asserts is the wrong default even if it feels faster or
+          friendlier on a single demo. Prefer a slightly slower setup that clears Level 1 over a clever rewrite that
+          invents markers or diagnoses.
         </p>
       </section>
 
       <footer>
         Used by
-        <a href="../lessons/0005-compare-ollama-models.html">Lesson 5</a>.
+        <a href="../lessons/0005-compare-ollama-models.html">Lesson 5</a>
+        and
+        <a href="../lessons/0006-compare-prompt-versions.html">Lesson 6</a>.
         Vocabulary in the
         <a href="eval-glossary.html">eval glossary</a>.
       </footer>
