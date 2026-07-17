@@ -118,7 +118,16 @@
           <h3>Acceptance gate</h3>
           <p>
             A fixed suite that must pass (or have explicitly accepted failures) before shipping a model default,
-            prompt change, or workflow switch. For LocalLab panel chat: Level 1 on the golden set.
+            prompt change, or workflow switch. For LocalLab panel chat: Level 1 on the golden set. Grow trend
+            tasks into the same family only after panel graders are calm.
+          </p>
+        </div>
+        <div class="card">
+          <h3>Trend chat task</h3>
+          <p>
+            An eval task whose context is a marker series across visits (plus underlying panels), not a single
+            report. New pressures: direction/change, multi-point citation, invent-forbids scoped to those visits.
+            Start offline (canned Level 1) before live Ollama scoring.
           </p>
         </div>
         <div class="card">

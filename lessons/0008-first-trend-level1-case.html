@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>First trend Level 1 case · Learn Evals</title>
+    <link rel="stylesheet" href="../assets/course.css" />
+    <script src="../assets/quiz.js" defer></script>
+  </head>
+  <body>
+    <main>
+      <header>
+        <p class="eyebrow">Lesson 8 · 25 minutes</p>
+        <h1>Panel gate calm → open trend</h1>
+        <p class="lede">
+          Your panel Level 1 suite is trustworthy enough to grow. Add the first offline trend-chat case
+          without dragging live Ollama into the loop yet.
+        </p>
+      </header>
+
+      <section>
+        <p class="kicker">The tangible win</p>
+        <p>
+          By the end, you will ship one synthetic trend Level 1 case in LocalLab (fixture +
+          trend-specific assertions + canned Vitest pass/fail), reusing shared policy checks where they
+          still apply—and you will leave live trend scoring for later.
+        </p>
+
+        <div class="note">
+          <strong>What you just locked:</strong>
+          panel Level 1 stayed green on both models after hardening
+          <code>no-hypothyroid-diagnosis</code>. That is a calm
+          <a href="../reference/eval-glossary.html">acceptance gate</a>, not permission to invent a huge
+          trend suite. One offline case is the Lesson 2 moment for trend chat. Product chat already
+          supports <code>contextType: "trend"</code> via
+          <code>buildChatSystemPrompt</code>—evals just haven’t covered it.
+        </div>
+
+        <div class="formula" aria-label="Grow after calibrate">
+          calm panel gate → one trend task offline → live only after canned green
+        </div>
+
+        <p>
+          <a href="https://hamel.dev/blog/posts/evals/">Hamel</a> grows coverage from failure pressures you
+          care about, not from framework shopping.
+          <a href="https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents">Anthropic</a>
+          keeps capability and regression suites distinct: here you are extending the LocalLab
+          <em>suite</em> with a new task shape (multi-visit marker trend), still Level 1 graders.
+        </p>
+      </section>
+
+      <section>
+        <h2>What changes when context is a trend</h2>
+        <p>
+          A panel task is one report + one question. A trend task is a marker series (oldest → newest)
+          plus the visit panels behind those points. The model can fail in ways panel cases never stress.
+        </p>
+        <div class="cards">
+          <article class="card">
+            <h3>Direction / change</h3>
+            <p>
+              Must notice movement (e.g. LDL 95 → 110), not only recite the latest value.
+            </p>
+          </article>
+          <article class="card">
+            <h3>Multi-point citation</h3>
+            <p>
+              Fixture-specific checks should require both (or all) synthetic values you care about.
+            </p>
+          </article>
+          <article class="card">
+            <h3>Same policy, new invent surface</h3>
+            <p>
+              Shared “do not diagnose / prescribe” still applies. Absent-marker invent lists are per
+              fixture—don’t copy glucose invent-forbids onto an LDL trend.
+            </p>
+          </article>
+        </div>
+
+        <article
+          class="question"
+          data-quiz
+          data-correct="both"
+          data-explanation="Trend replies must ground in the series; citing only the newest point misses the product job."
+          data-hint="Ask what a human would require to trust a ‘is this rising?’ answer."
+        >
+          <h3>LDL trend 95 → 110. Smallest citation bar?</h3>
+          <div class="answers">
+            <button type="button" data-answer="both" aria-pressed="false">Cite both values</button>
+            <button type="button" data-answer="last" aria-pressed="false">Cite latest only</button>
+            <button type="button" data-answer="none" aria-pressed="false">Skip numbers</button>
+          </div>
+          <p class="feedback" data-feedback aria-live="polite"></p>
+        </article>
+
+        <article
+          class="question"
+          data-quiz
+          data-correct="offline"
+          data-explanation="Same ritual as panel Lesson 2–4: prove graders on canned answers before paying for live trials."
+          data-hint="Ask what you did before panel live evals."
+        >
+          <h3>First trend case lands. Wire live Ollama next?</h3>
+          <div class="answers">
+            <button type="button" data-answer="offline" aria-pressed="false">Canned Vitest first</button>
+            <button type="button" data-answer="live" aria-pressed="false">Live gemma4 now</button>
+            <button type="button" data-answer="strict" aria-pressed="false">Ship stricter prompt</button>
+          </div>
+          <p class="feedback" data-feedback aria-live="polite"></p>
+        </article>
+      </section>
+
+      <section>
+        <h2>Practice: one offline trend Level 1 case</h2>
+        <div class="exercise">
+          <p>In LocalLab, mirror the panel pattern—keep production chat unchanged:</p>
+          <ol>
+            <li>
+              Add <code>server/evals/trendChatLevel1.ts</code> with one synthetic case, e.g. LDL
+              <strong>95 → 110</strong> across two visits, user question like “Is my LDL rising?” Include
+              a minimal <code>TrendSeries</code> + matching <code>PanelResponse[]</code> so
+              <code>buildChatSystemPrompt({ type: "trend", … })</code> is realistic.
+            </li>
+            <li>
+              Fixture-specific asserts (start tiny): cite both values; state rise / increase / upward
+              change; optional invent-forbid for a marker absent from those panels. Reuse shared policy
+              asserts from panel Level 1 only if they truly apply (diagnosis/prescribe bans)—do not force
+              panel-only ids onto trend.
+            </li>
+            <li>
+              Add <code>server/trendChat.eval.test.ts</code>: system prompt contains the marker and both
+              values; passing stub satisfies all checks; at least two deliberate violations fail the right
+              ids.
+            </li>
+            <li>
+              Do <strong>not</strong> extend <code>test:live-eval</code> / compare-live cards for trend in
+              this lesson. Offline green is the win.
+            </li>
+          </ol>
+          <p>
+            Prefer extracting shared helpers (check builders, excerpt helpers) over copy-pasting half of
+            <code>panelChatLevel1.ts</code>—but a thin duplicate is fine if a clean extract would blow the
+            time box.
+          </p>
+        </div>
+
+        <div class="checkpoint">
+          <strong>Retrieval checkpoint</strong>
+          <p>
+            Tell me: (1) your case id + question + the two LDL values, (2) which asserts are
+            fixture-specific vs reused, (3) one canned fail id that went red on purpose, (4) confirmation
+            live trend scoring is still deferred.
+          </p>
+        </div>
+      </section>
+
+      <section>
+        <h2>Primary reading</h2>
+        <p>
+          Skim Hamel’s
+          <a href="https://hamel.dev/blog/posts/evals/">create test cases</a>
+          section with “trend direction” as the new pressure. Re-read Anthropic’s
+          <a href="https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents"
+            >tasks vs suites</a
+          >
+          so you treat trend as a new task in the same Level 1 suite family—not a second product.
+        </p>
+      </section>
+
+      <section>
+        <h2>Where this leads</h2>
+        <p>
+          Once one trend case is offline-green, you can add a second dimension (falling marker, flat
+          normal, leading diagnosis question on a trend) the same way Lesson 3 grew panel coverage—then
+          wire live scoring when canned graders stop surprising you.
+        </p>
+      </section>
+
+      <footer>
+        Builds on
+        <a href="0007-calibrate-noisy-graders.html">Lesson 7</a>
+        and the panel golden set from
+        <a href="0003-golden-set-dimensions.html">Lesson 3</a>.
+        Claims grounded in
+        <a href="https://hamel.dev/blog/posts/evals/">Hamel</a>,
+        <a href="https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents">Anthropic</a>,
+        and the
+        <a href="../reference/eval-glossary.html">eval glossary</a>.
+        Ask follow-up questions if wiring <code>TrendSeries</code> into the fixture is unclear.
+      </footer>
+    </main>
+  </body>
+</html>
