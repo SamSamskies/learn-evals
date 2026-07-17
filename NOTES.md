@@ -1,6 +1,7 @@
 # Teaching notes
 
-- The learner wants the practical track centered on improving LocalLab's panel and trend chats, not PDF extraction.
+- The learner wants the practical track centered on improving LocalLab's panel and trend chats, and on finding which model is best for converting lab report PDFs into structured panel JSON.
+- Later: build extraction evals for lab report → structured JSON panels. Compare `Osmosis/Osmosis-Structure-0.6B:latest` against models like `gemma4` and `qwen3.6`.
 - Stay on local Ollama only. Routstr / routstrd and issue #8 are out of scope (see LR-0007).
 - Keep each lesson to 15–30 minutes and stay in TypeScript where practical.
 - Use only synthetic or deliberately de-identified medical data in eval fixtures.
