@@ -121,6 +121,29 @@
             prompt change, or workflow switch. For LocalLab panel chat: Level 1 on the golden set.
           </p>
         </div>
+        <div class="card">
+          <h3>Grader false positive</h3>
+          <p>
+            The check fails a reply a careful human would pass—often because a regex matched refusal language,
+            an example-to-avoid, or thinking text. Fix the grader; keep a fixture so the FP cannot return.
+          </p>
+        </div>
+        <div class="card">
+          <h3>Flake</h3>
+          <p>
+            The same task + system + graders flips pass↔fail across trials. Treat as unstable signal: read
+            transcripts, harden the check, or raise the trial budget before using the suite as a ship gate.
+          </p>
+        </div>
+        <div class="card">
+          <h3>pass@k / pass^k</h3>
+          <p>
+            Multi-trial metrics from Anthropic’s taxonomy.
+            <code>pass@k</code>: at least one of k trials succeeds.
+            <code>pass^k</code>: all k trials succeed (consistency). LocalLab chat ship decisions care more about
+            consistency than a lucky single green run.
+          </p>
+        </div>
       </section>
 
       <footer>
@@ -128,6 +151,8 @@
         <a href="https://platform.openai.com/docs/guides/evals">OpenAI eval guide</a>
         and
         <a href="https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents">Anthropic's eval taxonomy</a>.
+        Related:
+        <a href="grader-triage.html">grader triage</a>.
       </footer>
     </main>
   </body>

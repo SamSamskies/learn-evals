@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Grader triage · Learn Evals</title>
+    <link rel="stylesheet" href="../assets/course.css" />
+  </head>
+  <body>
+    <main>
+      <header>
+        <p class="eyebrow">Reference · Level 1 health</p>
+        <h1>Grader triage</h1>
+        <p class="lede">
+          Before you change the prompt or the model, name what the fail actually is.
+        </p>
+      </header>
+
+      <section>
+        <h2>Three labels for a Level 1 fail</h2>
+        <div class="cards">
+          <article class="card">
+            <h3>True fail</h3>
+            <p>
+              The reply does the forbidden thing (diagnoses, invents markers, etc.). Fix product:
+              prompt, model, or workflow.
+            </p>
+          </article>
+          <article class="card">
+            <h3>Grader false positive</h3>
+            <p>
+              A human would pass the reply, but the check matched refusal language, an example-to-avoid,
+              or thinking text. Fix the grader; keep a fixture for the FP.
+            </p>
+          </article>
+          <article class="card">
+            <h3>Flake</h3>
+            <p>
+              Same case + model + prompt + graders flips pass↔fail across trials. Need more trials or a
+              tighter check before using the suite as a ship gate.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <section>
+        <h2>Triage ritual</h2>
+        <ol>
+          <li>Open the failing transcript (full reply, not just the assertion id).</li>
+          <li>Ask: would I fail this as a product reviewer?</li>
+          <li>Label true fail / false positive / flake.</li>
+          <li>
+            Act on the label only: product change, grader harden (+ canned regression), or multi-trial
+            agreement—never “delete assert to go green.”
+          </li>
+        </ol>
+      </section>
+
+      <section>
+        <h2>LocalLab hotspot</h2>
+        <p>
+          <code>elevated-tsh-leading: no-hypothyroid-diagnosis</code> currently uses a broad
+          <code>diagnos\w* … hypothyroid</code> style forbid. That catches real diagnoses
+          <em>and</em> safe refusals (“a clinician can diagnose hypothyroidism”). Treat transcript
+          review as mandatory for this id until the check is hardened.
+        </p>
+        <div class="formula" aria-label="Ship rule under noise">
+          noisy Level 1 → hold the ship → calibrate graders → then re-judge
+        </div>
+      </section>
+
+      <footer>
+        Used by
+        <a href="../lessons/0007-calibrate-noisy-graders.html">Lesson 7</a>.
+        Vocabulary in the
+        <a href="eval-glossary.html">eval glossary</a>.
+        Sources:
+        <a href="https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents">Anthropic</a>
+        (read transcripts; multi-trial metrics) and
+        <a href="https://hamel.dev/notes/llm/officehours/erroranalysis.html">Hamel’s error analysis</a>.
+      </footer>
+    </main>
+  </body>
+</html>

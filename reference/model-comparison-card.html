@@ -22,9 +22,18 @@
           <li>Golden cases — same <code>PANEL_CHAT_LEVEL1_CASES</code></li>
           <li>Graders — same Level 1 assertions</li>
           <li>Harness path — same live chat entrypoint</li>
-          <li>Trial budget — same trials per case (start with 1)</li>
+          <li>
+            Trial budget — same trials per case (start with 1; raise to 3+ when an assert flakes or you are about
+            to ship)
+          </li>
           <li>The other axis — if comparing prompts, freeze the model; if comparing models, freeze the prompt</li>
         </ul>
+        <p>
+          If Level 1 looks green but transcripts show
+          <a href="grader-triage.html">grader false positives</a>
+          or flakes, hold the ship and calibrate graders first—see
+          <a href="../lessons/0007-calibrate-noisy-graders.html">Lesson 7</a>.
+        </p>
       </section>
 
       <section>
@@ -57,11 +66,13 @@
 
       <footer>
         Used by
-        <a href="../lessons/0005-compare-ollama-models.html">Lesson 5</a>
+        <a href="../lessons/0005-compare-ollama-models.html">Lesson 5</a>,
+        <a href="../lessons/0006-compare-prompt-versions.html">Lesson 6</a>,
         and
-        <a href="../lessons/0006-compare-prompt-versions.html">Lesson 6</a>.
+        <a href="../lessons/0007-calibrate-noisy-graders.html">Lesson 7</a>.
         Vocabulary in the
-        <a href="eval-glossary.html">eval glossary</a>.
+        <a href="eval-glossary.html">eval glossary</a>; triage in
+        <a href="grader-triage.html">grader triage</a>.
       </footer>
     </main>
   </body>

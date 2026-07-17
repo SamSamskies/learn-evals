@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Calibrate noisy graders · Learn Evals</title>
+    <link rel="stylesheet" href="../assets/course.css" />
+    <script src="../assets/quiz.js" defer></script>
+  </head>
+  <body>
+    <main>
+      <header>
+        <p class="eyebrow">Lesson 7 · 25 minutes</p>
+        <h1>When Level 1 lies</h1>
+        <p class="lede">
+          You held <code>stricter-no-diagnose</code> for the right reason. Now make the suite trustworthy
+          enough to re-judge that ship call.
+        </p>
+      </header>
+
+      <section>
+        <p class="kicker">The tangible win</p>
+        <p>
+          By the end, you will triage at least two
+          <code>no-hypothyroid-diagnosis</code> transcripts (true fail vs grader false positive vs flake),
+          harden or fixture-guard the check so known refusal language no longer false-fails, and report
+          agreement across three live trials of one fixed config—then say whether Level 1 is calm enough
+          to re-decide the prompt variant.
+        </p>
+
+        <div class="note">
+          <strong>What you already proved:</strong>
+          fair prompt compare works, and a green
+          <a href="../reference/model-comparison-card.html">comparison card</a>
+          is not enough when the same assert matches “a clinician can diagnose…” or flips pass↔fail across
+          runs. That is grader health, not vibes. See the
+          <a href="../reference/grader-triage.html">grader triage</a>
+          sheet.
+        </div>
+
+        <div class="formula" aria-label="Triage before product change">
+          fail → read transcript → label → then change product or grader
+        </div>
+
+        <p>
+          <a href="https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents">Anthropic</a>
+          is blunt: when a task fails, the transcript tells you whether the agent erred or the grader
+          rejected a valid solution. They also treat multi-trial metrics (<code>pass@k</code> /
+          <code>pass^k</code>) as how you talk about nondeterministic systems—LocalLab chat is one.
+          Your mission’s “ship when Level 1 supports the decision” only holds after this calibration.
+        </p>
+      </section>
+
+      <section>
+        <h2>Three different reds</h2>
+        <p>
+          A red assertion id is not one failure mode. For LocalLab’s TSH safety check, you already saw
+          all three:
+        </p>
+        <div class="cards">
+          <article class="card">
+            <h3>True fail</h3>
+            <p>The model answers the leading question with a diagnosis. Product change is fair game.</p>
+          </article>
+          <article class="card">
+            <h3>False positive</h3>
+            <p>
+              Regex hits refusal or meta text (“diagnose hypothyroidism” inside a clinician deferral;
+              “you have hypothyroidism” as a bad example in a thinking trace).
+            </p>
+          </article>
+          <article class="card">
+            <h3>Flake</h3>
+            <p>Same model + prompt + cases + graders; pass↔fail across runs. One card cannot gate ship.</p>
+          </article>
+        </div>
+
+        <article
+          class="question"
+          data-quiz
+          data-correct="fpa"
+          data-explanation="A human product reviewer would pass a clear clinician deferral; the check over-matched wording."
+          data-hint="Ask whether a careful human would call this reply a diagnosis."
+        >
+          <h3>Reply says a clinician can “diagnose hypothyroidism.” Level 1 fails. Label?</h3>
+          <div class="answers">
+            <button type="button" data-answer="fpa" aria-pressed="false">Grader false alarm</button>
+            <button type="button" data-answer="real" aria-pressed="false">Real diagnosis fail</button>
+            <button type="button" data-answer="infra" aria-pressed="false">Harness infra flake</button>
+          </div>
+          <p class="feedback" data-feedback aria-live="polite"></p>
+        </article>
+      </section>
+
+      <section>
+        <h2>Calibrate the check, don’t delete it</h2>
+        <p>
+          Lesson 5’s rule still stands: do not dilute safety asserts to manufacture green. The move is
+          the opposite of loosening—make
+          <code>no-hypothyroid-diagnosis</code> match
+          <em>absolute diagnosis language</em>, not the substring “diagnose” near “hypothyroid.” Keep a
+          canned transcript (or fixture reply) for the clinician-deferral FP so the hardened check cannot
+          regress.
+        </p>
+        <p>
+          <a href="https://hamel.dev/notes/llm/officehours/erroranalysis.html">Hamel’s error analysis</a>
+          starts from observed failure patterns. Your FP patterns are now observed—write the test that
+          encodes them.
+        </p>
+
+        <article
+          class="question"
+          data-quiz
+          data-correct="read"
+          data-explanation="Transcript review separates true fails from grader bugs and flakes before you touch guidance or defaults."
+          data-hint="Ask what Anthropic says to do when a task fails."
+        >
+          <h3>Same config flips pass↔fail on TSH. First move?</h3>
+          <div class="answers">
+            <button type="button" data-answer="read" aria-pressed="false">Inspect the transcript</button>
+            <button type="button" data-answer="ship" aria-pressed="false">Promote the variant</button>
+            <button type="button" data-answer="drop" aria-pressed="false">Delete the assertion</button>
+          </div>
+          <p class="feedback" data-feedback aria-live="polite"></p>
+        </article>
+
+        <article
+          class="question"
+          data-quiz
+          data-correct="hold"
+          data-explanation="Under grader noise, a single green row is not evidence. Calibrate, then re-run the fair compare."
+          data-hint="Ask whether today’s Level 1 signal was trustworthy enough to promote."
+        >
+          <h3>stricter-no-diagnose goes 3/3 once while TSH flakes elsewhere. Next?</h3>
+          <div class="answers">
+            <button type="button" data-answer="hold" aria-pressed="false">Hold until graders calm</button>
+            <button type="button" data-answer="ship" aria-pressed="false">Ship after one green</button>
+            <button type="button" data-answer="drop" aria-pressed="false">Loosen the TSH assert</button>
+          </div>
+          <p class="feedback" data-feedback aria-live="polite"></p>
+        </article>
+      </section>
+
+      <section>
+        <h2>Practice: triage, harden, then measure agreement</h2>
+        <div class="exercise">
+          <p>In LocalLab, keep production on the default prompt. Work the grader:</p>
+          <ol>
+            <li>
+              Collect at least two transcripts that hit
+              <code>elevated-tsh-leading: no-hypothyroid-diagnosis</code>
+              (from today’s bake-offs or a fresh live run). Label each using the
+              <a href="../reference/grader-triage.html">triage sheet</a>.
+            </li>
+            <li>
+              Harden <code>no-hypothyroid-diagnosis</code> so clinician-deferral / example-to-avoid
+              wording passes while a clear absolute diagnosis still fails. Add a canned unit test (or
+              fixture reply) for at least one known false positive.
+            </li>
+            <li>
+              Freeze one config (e.g. <code>gemma4:26b</code> + default prompt). Run live Level 1
+              <strong>three</strong> times. Record per-run pass rate and whether
+              <code>no-hypothyroid-diagnosis</code> agreed across all three (this is the practical
+              start of <code>pass^k</code>-style consistency).
+            </li>
+            <li>
+              One-sentence verdict: is Level 1 calm enough to re-run default vs
+              <code>stricter-no-diagnose</code> as a ship decision? If not, what FP or flake remains?
+            </li>
+          </ol>
+          <p>
+            Do not promote the prompt variant mid-lesson unless your three-trial agreement and hardened
+            check clearly support it. Do not delete the TSH safety assert.
+          </p>
+        </div>
+
+        <div class="checkpoint">
+          <strong>Retrieval checkpoint</strong>
+          <p>
+            Tell me: (1) labels for your two transcripts, (2) what you changed in the grader (or why you
+            didn’t yet), (3) 3-trial agreement on <code>no-hypothyroid-diagnosis</code>, (4) whether you’d
+            re-open the ship call for <code>stricter-no-diagnose</code>.
+          </p>
+        </div>
+      </section>
+
+      <section>
+        <h2>Primary reading</h2>
+        <p>
+          Read Anthropic’s sections on
+          <a href="https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents"
+            >trials / pass@k vs pass^k</a
+          >
+          and “read the transcripts” under grader design. Skim Hamel’s
+          <a href="https://hamel.dev/notes/llm/officehours/erroranalysis.html">error analysis before writing tests</a>
+          with your TSH false positives in mind.
+        </p>
+      </section>
+
+      <section>
+        <h2>Where this leads</h2>
+        <p>
+          Once Level 1 stops crying wolf, prompt and model bake-offs become ship-grade again. After that,
+          you can grow the suite (more cases, trend chat) without baking noise into the gate.
+        </p>
+      </section>
+
+      <footer>
+        Builds on
+        <a href="0006-compare-prompt-versions.html">Lesson 6</a>.
+        Claims grounded in
+        <a href="https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents">Anthropic</a>,
+        <a href="https://hamel.dev/notes/llm/officehours/erroranalysis.html">Hamel’s error analysis</a>,
+        the
+        <a href="../reference/eval-glossary.html">eval glossary</a>,
+        and
+        <a href="../reference/grader-triage.html">grader triage</a>.
+        Ask follow-up questions if hardening <code>no-hypothyroid-diagnosis</code> without losing true fails is unclear.
+      </footer>
+    </main>
+  </body>
+</html>

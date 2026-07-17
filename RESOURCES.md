@@ -5,7 +5,7 @@
 - [OpenAI: Working with evals](https://platform.openai.com/docs/guides/evals)
   Primary platform guide defining an eval around representative test data and explicit testing criteria. Use for: datasets, graders, and programmatic eval runs.
 - [Anthropic: Demystifying evals for AI agents](https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents)
-  Clear taxonomy of tasks, trials, graders, outcomes, harnesses, and suites, including grader tradeoffs. Use for: eval design vocabulary; capability vs regression; adopting new models with pass rate / latency / cost baselines on a static task bank.
+  Clear taxonomy of tasks, trials, graders, outcomes, harnesses, and suites, including grader tradeoffs. Use for: eval design vocabulary; capability vs regression; adopting new models with pass rate / latency / cost baselines on a static task bank; reading transcripts when graders reject valid solutions; multi-trial `pass@k` / `pass^k` when chat flips pass↔fail.
 - [Hamel Husain: Your AI Product Needs Evals](https://hamel.dev/blog/posts/evals/)
   Product-engineering workflow that starts with cheap assertions, trace review, and observed failures. Use for: deciding what to automate first and avoiding framework-first evaluation.
 - [Hamel Husain: LLM Evals FAQ](https://hamel.dev/blog/posts/evals-faq/)
