@@ -4,4 +4,4 @@ Level 1’s TSH safety check no longer fails on bare “diagnose … hypothyroid
 
 **Evidence:** LocalLab `mustNotMatchAbsoluteHypothyroidDiagnosis` + tests in `panelChat.eval.test.ts`; learner asked to keep the stricter variant for now.
 
-**Implications:** Lesson 7 complete after post-harden live green. Soft pattern-naming (“characteristic of … hypothyroidism”) remains a product-policy call. Next: Lesson 8 — first offline trend Level 1 case; not another prompt ship debate.
+**Implications:** Lesson 7 complete after post-harden live green. Soft pattern-naming remains a product-policy call. Prompt variants removed in LR-0011. Next: Lesson 8 — first offline trend Level 1 case.

@@ -10,7 +10,7 @@
 - Learner recalibrated assertions after invent/false-range fails; live suite passes on `gemma4:26b`.
 - Lesson 5 done: `gemma4:26b` 3/3 (74 s) vs `medgemma1.5:latest` 2/3 (49 s, fails `no-hypothyroid-diagnosis`). Default Ollama panel pick = gemma4. Learner shipped `compare-live-evals` skill for card reports under `evals/comparisons/`.
 - Lesson 6 done: built `stricter-no-diagnose` via `LOCALLAB_CHAT_PROMPT` flag; did **not** ship—Level 1 too noisy (regex FPs on refusals/thinking traces; pass↔fail flakes). Production stays on default. See LR-0008.
-- Lesson 7 done: post-harden live re-run still all-green for `gemma4:26b` and `medgemma1.5:latest`. Soft pattern-naming still out of assert scope. Kept `stricter-no-diagnose` eval-only.
+- Lesson 7 done: post-harden live re-run still all-green for `gemma4:26b` and `medgemma1.5:latest`. Soft pattern-naming still out of assert scope. Removed `stricter-no-diagnose` + prompt-variant flag (production guidance only).
 - Lesson 8 = first offline trend Level 1 case (LDL rise fixture + canned Vitest); defer live trend scoring.
 - Prefer gating live evals behind an env flag so default `vitest run` stays offline-safe.
 - Do not teach “dilute assertions until green”; diagnose prompt vs model vs over-strict check first.
