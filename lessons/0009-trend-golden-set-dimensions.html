@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Trend golden set dimensions · Learn Evals</title>
+    <link rel="stylesheet" href="../assets/course.css" />
+    <script src="../assets/quiz.js" defer></script>
+  </head>
+  <body>
+    <main>
+      <header>
+        <p class="eyebrow">Lesson 9 · 25 minutes</p>
+        <h1>Trend coverage by pressure</h1>
+        <p class="lede">
+          One rising-LDL case proves the graders. A tiny golden set proves the dataset can catch
+          different trend-chat failures.
+        </p>
+      </header>
+
+      <section>
+        <p class="kicker">The tangible win</p>
+        <p>
+          By the end, you will ship two more synthetic trend Level 1 cases in LocalLab—each with its
+          own series, question, fixture-specific asserts, and canned Vitest pass/fail—so
+          <code>TREND_CHAT_LEVEL1_CASES</code> covers three distinct pressures, still offline.
+        </p>
+
+        <div class="note">
+          <strong>What you just shipped:</strong>
+          <code>ldl-rising</code> (95 → 110, “Is my LDL rising?”) with multi-point citation, rise
+          language, ApoB invent-forbid, and shared policy. That is one cell of the grid. Same rule as
+          <a href="0003-golden-set-dimensions.html">Lesson 3</a> for panels: grow by
+          <a href="../reference/eval-glossary.html">golden dataset</a>
+          pressure, not by near-duplicates. Live trend scoring stays deferred.
+        </div>
+
+        <div class="formula" aria-label="Trend golden set rule">
+          golden trend set = few cases × distinct movement / question pressures
+        </div>
+
+        <p>
+          <a href="https://hamel.dev/blog/posts/evals/">Hamel</a> wants challenging, representative
+          cases—not volume.
+          <a href="https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents">Anthropic</a>
+          treats each scenario as a task in a suite: you are adding tasks, not inventing a new product.
+        </p>
+      </section>
+
+      <section>
+        <h2>Trend pressures (not panel copies)</h2>
+        <p>
+          Panel dimensions were panel state, leading questions, invention risk. Trend keeps shared
+          policy and invent-forbids, but the new axes are about <em>change over visits</em>.
+        </p>
+        <div class="cards">
+          <article class="card">
+            <h3>Direction</h3>
+            <p>
+              Rising (shipped) vs falling vs flat/stable. Graders must not assume “up” language forever.
+            </p>
+          </article>
+          <article class="card">
+            <h3>Question pressure</h3>
+            <p>
+              Neutral “is it rising?” vs leading “do I have high cholesterol?” on a series.
+            </p>
+          </article>
+          <article class="card">
+            <h3>Invention risk</h3>
+            <p>
+              Per-fixture absent markers (ApoB on lipids, A1C on glucose trends)—never a global list.
+            </p>
+          </article>
+        </div>
+
+        <article
+          class="question"
+          data-quiz
+          data-correct="fall"
+          data-explanation="A falling series forces opposite direction language; another rising LDL twin barely adds coverage."
+          data-hint="Ask which case would fail if the model always said ‘rising’."
+        >
+          <h3>Best second trend case after <code>ldl-rising</code>?</h3>
+          <div class="answers">
+            <button type="button" data-answer="twin" aria-pressed="false">LDL 96→111, same ask</button>
+            <button type="button" data-answer="fall" aria-pressed="false">LDL 130→105, going down?</button>
+            <button type="button" data-answer="live" aria-pressed="false">Wire live Ollama next</button>
+          </div>
+          <p class="feedback" data-feedback aria-live="polite"></p>
+        </article>
+
+        <article
+          class="question"
+          data-quiz
+          data-correct="lead"
+          data-explanation="Leading diagnosis questions stress shared policy under trend context—new pressure, still Level 1."
+          data-hint="Mirror what elevated-tsh-leading did for panel chat."
+        >
+          <h3>Best third case to complement rise + fall?</h3>
+          <div class="answers">
+            <button type="button" data-answer="lead" aria-pressed="false">Rising LDL, “High cholesterol?”</button>
+            <button type="button" data-answer="same" aria-pressed="false">Another rising LDL twin</button>
+            <button type="button" data-answer="pdfx" aria-pressed="false">PDF extract of lipids</button>
+          </div>
+          <p class="feedback" data-feedback aria-live="polite"></p>
+        </article>
+
+        <article
+          class="question"
+          data-quiz
+          data-correct="rewrite"
+          data-explanation="Citation and direction checks are bound to this series’ values and movement; rewrite them per case."
+          data-hint="Shared policy can reuse; fixture facts cannot."
+        >
+          <h3>Falling LDL case. Reuse <code>states-ldl-rising</code>?</h3>
+          <div class="answers">
+            <button type="button" data-answer="keepit" aria-pressed="false">Keep rising check</button>
+            <button type="button" data-answer="rewrite" aria-pressed="false">Rewrite fall language</button>
+            <button type="button" data-answer="delete" aria-pressed="false">Drop all direction</button>
+          </div>
+          <p class="feedback" data-feedback aria-live="polite"></p>
+        </article>
+      </section>
+
+      <section>
+        <h2>Practice: ship Case B and Case C offline</h2>
+        <div class="exercise">
+          <p>In LocalLab, extend <code>trendChatLevel1.ts</code> + <code>trendChat.eval.test.ts</code>:</p>
+          <ol>
+            <li>
+              <strong>Case B — opposite direction.</strong> Synthetic falling series (LDL or another
+              marker), question like “Is my LDL going down?” Fixture asserts: cite both values; state
+              fall / decrease / downward change; invent-forbid for a marker absent from those visits.
+            </li>
+            <li>
+              <strong>Case C — leading question.</strong> Rising (or out-of-range) series with a
+              diagnosis-shaped ask (“Do I have high cholesterol?” / similar). Fixture asserts: cite the
+              values that matter; do <em>not</em> require the model to diagnose—shared
+              <code>no-*-diagnosis</code> / prescribe bans should catch slips. Add invent-forbid if useful.
+            </li>
+            <li>
+              Register both in <code>TREND_CHAT_LEVEL1_CASES</code>. Add passing stubs and at least two
+              deliberate violation fails per new case (right assert ids).
+            </li>
+            <li>
+              Keep production chat and live eval scripts untouched. Offline green only.
+            </li>
+          </ol>
+          <p>
+            Optional fourth pressure later: flat/stable series (“Is this changing?”) to catch invented
+            trends—skip it if the time box is tight.
+          </p>
+        </div>
+
+        <div class="checkpoint">
+          <strong>Retrieval checkpoint</strong>
+          <p>
+            Tell me: (1) Case B and C ids + questions + the two values each, (2) which fixture asserts
+            are new vs rewritten from <code>ldl-rising</code>, (3) one canned fail id per new case, (4)
+            confirmation live trend scoring is still deferred.
+          </p>
+        </div>
+      </section>
+
+      <section>
+        <h2>Primary reading</h2>
+        <p>
+          Re-read Hamel’s
+          <a href="https://hamel.dev/blog/posts/evals/#step-2-create-test-cases">create test cases</a>
+          with trend movement as the failure pressure. Skim Anthropic’s
+          <a href="https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents"
+            >tasks vs suites</a
+          >
+          so three trend cases feel like one suite growing, not three products.
+        </p>
+      </section>
+
+      <section>
+        <h2>Where this leads</h2>
+        <p>
+          When the three-case trend golden set is offline-green and canned fails stop surprising you,
+          the next lesson wires live trend scoring the way
+          <a href="0004-live-eval-harness.html">Lesson 4</a>
+          did for panel—gated, production-parity, still Level 1.
+        </p>
+      </section>
+
+      <footer>
+        Builds on
+        <a href="0008-first-trend-level1-case.html">Lesson 8</a>
+        and
+        <a href="0003-golden-set-dimensions.html">Lesson 3</a>.
+        Claims grounded in
+        <a href="https://hamel.dev/blog/posts/evals/">Hamel</a>,
+        <a href="https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents">Anthropic</a>,
+        and the
+        <a href="../reference/eval-glossary.html">eval glossary</a>.
+        Ask follow-up questions if Case C’s fixture asserts start overlapping shared diagnosis bans.
+      </footer>
+    </main>
+  </body>
+</html>
