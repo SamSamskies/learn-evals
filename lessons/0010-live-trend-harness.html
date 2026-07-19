@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Live trend harness · Learn Evals</title>
+    <link rel="stylesheet" href="../assets/course.css" />
+    <script src="../assets/quiz.js" defer></script>
+  </head>
+  <body>
+    <main>
+      <header>
+        <p class="eyebrow">Lesson 10 · 30 minutes</p>
+        <h1>Score trend chat live</h1>
+        <p class="lede">
+          Three canned trend cases prove the graders. Now point them at real Ollama output — through
+          the exact code path production uses.
+        </p>
+      </header>
+
+      <section>
+        <p class="kicker">The tangible win</p>
+        <p>
+          By the end, you will have a gated <code>trendChat.live.eval.test.ts</code> in LocalLab, a
+          <code>test:live-eval</code> script that can run both suites, and a first trend baseline on
+          <code>gemma4:26b</code>: pass rate, per-case wall time, and triaged transcripts.
+        </p>
+
+        <div class="note">
+          <strong>What you just shipped:</strong> the trend golden set covers rising, falling, and
+          leading pressures, all offline-green (98/98 with 24 canned trend tests). That was the
+          condition <a href="0009-trend-golden-set-dimensions.html">Lesson 9</a> set for lifting the
+          live-trend deferral. This lesson is <a href="0004-live-eval-harness.html">Lesson 4</a>
+          replayed on the trend axis — same gate, same discipline, new context builder.
+        </div>
+
+        <div class="formula" aria-label="Harness parity rule">
+          live eval = production context builder + real model + frozen graders
+        </div>
+
+        <p>
+          <a href="https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents"
+            >Anthropic</a
+          >
+          calls this the harness: the machinery that hands the task to the model and collects the
+          transcript. If the harness builds a different prompt than production, you are baselining a
+          product that does not exist.
+        </p>
+      </section>
+
+      <section>
+        <h2>What transfers, what doesn't</h2>
+        <div class="cards">
+          <article class="card">
+            <h3>Transfers</h3>
+            <p>
+              The gate (<code>LOCALLAB_LIVE_EVAL=1</code> + <code>skipIf</code>), the
+              <code>afterAll</code> pass-rate summary, and the raw-answer dump with begin/end markers
+              your <code>compare-live-evals</code> skill parses.
+            </p>
+          </article>
+          <article class="card">
+            <h3>Changes</h3>
+            <p>
+              The context: <code>buildChatSystemPrompt({ type: "trend", series, panels })</code>
+              instead of the panel shape. Each fixture already carries its own
+              <code>series</code> and <code>panels</code>.
+            </p>
+          </article>
+          <article class="card">
+            <h3>Watch out</h3>
+            <p>
+              <code>scripts/live-eval.mjs</code> hardcodes the panel test file as a CLI argument. Left
+              alone, your new trend file will silently never run live.
+            </p>
+          </article>
+        </div>
+
+        <p>
+          The gating is layered, and it is worth seeing why. The default
+          <code>vitest.config.ts</code> excludes <code>server/**/*.live.eval.test.ts</code>, so naming
+          the file correctly keeps <code>npm test</code> offline-safe with zero effort. The
+          <code>describe.skipIf(!LIVE_EVAL_ENABLED)</code> inside the file is the second lock: even if
+          someone points vitest at the file directly, nothing burns inference time without the flag.
+        </p>
+
+        <article
+          class="question"
+          data-quiz
+          data-correct="builder"
+          data-explanation="Parity means scoring the prompt production actually sends — call the same buildChatSystemPrompt trend path, never a copy."
+          data-hint="Ask which option cannot drift when services/chat.ts changes."
+        >
+          <h3>What makes the live trend harness production-parity?</h3>
+          <div class="answers">
+            <button type="button" data-answer="builder" aria-pressed="false">Calls the shared prompt builder</button>
+            <button type="button" data-answer="copying" aria-pressed="false">Copies the prompt into tests</button>
+            <button type="button" data-answer="rewrite" aria-pressed="false">Writes a leaner test prompt</button>
+          </div>
+          <p class="feedback" data-feedback aria-live="polite"></p>
+        </article>
+
+        <article
+          class="question"
+          data-quiz
+          data-correct="config"
+          data-explanation="The default vitest config excludes *.live.eval.test.ts by glob; the env flag inside the file is only the second lock."
+          data-hint="Two locks exist — which one does npm test hit first?"
+        >
+          <h3>Why does <code>npm test</code> never run the new live file?</h3>
+          <div class="answers">
+            <button type="button" data-answer="config" aria-pressed="false">Default config excludes the glob</button>
+            <button type="button" data-answer="vitest" aria-pressed="false">Vitest always skips slow suites</button>
+            <button type="button" data-answer="ollama" aria-pressed="false">Ollama being offline skips them</button>
+          </div>
+          <p class="feedback" data-feedback aria-live="polite"></p>
+        </article>
+
+        <article
+          class="question"
+          data-quiz
+          data-correct="reading"
+          data-explanation="Lesson 7's rule holds on the trend axis: label true fail / grader FP / flake from the transcript before touching prompt, model, or regex."
+          data-hint="What did the hypothyroid false positives teach you?"
+        >
+          <h3>First move when <code>states-ldl-rising</code> fails live?</h3>
+          <div class="answers">
+            <button type="button" data-answer="reading" aria-pressed="false">Read the whole transcript first</button>
+            <button type="button" data-answer="loosens" aria-pressed="false">Loosen the direction regex now</button>
+            <button type="button" data-answer="swapper" aria-pressed="false">Try another model right away</button>
+          </div>
+          <p class="feedback" data-feedback aria-live="polite"></p>
+        </article>
+      </section>
+
+      <section>
+        <h2>Practice: wire it, gate it, baseline it</h2>
+        <div class="exercise">
+          <p>In LocalLab:</p>
+          <ol>
+            <li>
+              <strong>Create <code>server/trendChat.live.eval.test.ts</code></strong> mirroring the
+              panel live suite: same env gate and timeout handling, but build context with
+              <code>buildChatSystemPrompt({ type: "trend", series: level1Case.series, panels:
+              level1Case.panels })</code>, call <code>generateChatReply</code>, score with
+              <code>evaluateTrendChatLevel1(answer, level1Case)</code> over
+              <code>TREND_CHAT_LEVEL1_CASES</code>. Keep the <code>afterAll</code> pass-rate log and
+              the <code>raw answer begin/end</code> markers.
+            </li>
+            <li>
+              <strong>Update <code>scripts/live-eval.mjs</code></strong> so trend runs: add a
+              <code>--suite panel|trend|all</code> flag (default <code>all</code>) that picks which
+              file paths to pass to vitest — the live config's glob already includes both.
+            </li>
+            <li>
+              <strong>Baseline on <code>gemma4:26b</code>:</strong>
+              <code>npm run test:live-eval -- --suite trend --model gemma4:26b</code>. Record pass
+              rate and wall time per case.
+            </li>
+            <li>
+              <strong>Triage every fail</strong> with the
+              <a href="../reference/grader-triage.html">grader-triage ritual</a> before changing
+              anything: true fail, grader false positive, or flake. Grader FPs earn a canned fixture;
+              flakes earn more trials — never a diluted assert.
+            </li>
+            <li>
+              Confirm plain <code>npm test</code> is untouched and offline-green.
+            </li>
+          </ol>
+          <p>
+            If the leading case trips shared diagnosis bans on softened language, that is the same
+            hotspot <a href="0007-calibrate-noisy-graders.html">Lesson 7</a> hardened for panels —
+            compare against <code>isSoftenedOrMetaHypothyroidClaim</code> before writing anything new.
+          </p>
+        </div>
+
+        <div class="checkpoint">
+          <strong>Retrieval checkpoint</strong>
+          <p>
+            Tell me: (1) trend pass rate and per-case wall time on <code>gemma4:26b</code>, (2) any
+            failing assertion ids with their triage label, (3) how <code>--suite</code> resolves to
+            file paths in the script, (4) proof <code>npm test</code> still passes offline.
+          </p>
+        </div>
+      </section>
+
+      <section>
+        <h2>Primary reading</h2>
+        <p>
+          Re-read the harness and trials sections of Anthropic's
+          <a href="https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents"
+            >Demystifying evals for AI agents</a
+          >
+          — you are now running two suites against one harness, which is exactly their
+          tasks-vs-suites split. Keep
+          <a href="https://hamel.dev/blog/posts/evals/#look-at-your-traces">Hamel's look-at-your-traces</a>
+          open while triaging the first live fails.
+        </p>
+      </section>
+
+      <section>
+        <h2>Where this leads</h2>
+        <p>
+          With a trend baseline on the books, the next moves mirror the panel arc: a
+          <a href="../reference/model-comparison-card.html">comparison card</a> for
+          <code>gemma4:26b</code> vs <code>medgemma1.5:latest</code> on the trend suite, and — if
+          transcripts show invented movement — the banked flat/stable fourth case.
+        </p>
+      </section>
+
+      <footer>
+        Builds on
+        <a href="0004-live-eval-harness.html">Lesson 4</a>
+        and
+        <a href="0009-trend-golden-set-dimensions.html">Lesson 9</a>.
+        Claims grounded in
+        <a href="https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents">Anthropic</a>,
+        <a href="https://hamel.dev/blog/posts/evals/">Hamel</a>,
+        the
+        <a href="../reference/grader-triage.html">grader-triage reference</a>,
+        and the
+        <a href="../reference/eval-glossary.html">eval glossary</a>.
+        Ask follow-up questions if the live-eval script refactor or the trend context shape is
+        unclear — I can walk through either.
+      </footer>
+    </main>
+  </body>
+</html>
