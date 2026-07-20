@@ -19,9 +19,12 @@
       <section>
         <h2>Constants (never change mid-compare)</h2>
         <ul>
-          <li>Golden cases — same <code>PANEL_CHAT_LEVEL1_CASES</code></li>
-          <li>Graders — same Level 1 assertions</li>
-          <li>Harness path — same live chat entrypoint</li>
+          <li>
+            Golden cases — same suite only: <code>PANEL_CHAT_LEVEL1_CASES</code> <em>or</em>
+            <code>TREND_CHAT_LEVEL1_CASES</code> (never blend pass rates across suites)
+          </li>
+          <li>Graders — same Level 1 assertions for that suite</li>
+          <li>Harness path — same live chat entrypoint (<code>--suite panel</code> or <code>--suite trend</code>)</li>
           <li>
             Trial budget — same trials per case (start with 1; raise to 3+ when an assert flakes or you are about
             to ship)
@@ -68,11 +71,14 @@
         Used by
         <a href="../lessons/0005-compare-ollama-models.html">Lesson 5</a>,
         <a href="../lessons/0006-compare-prompt-versions.html">Lesson 6</a>,
+        <a href="../lessons/0007-calibrate-noisy-graders.html">Lesson 7</a>,
         and
-        <a href="../lessons/0007-calibrate-noisy-graders.html">Lesson 7</a>.
+        <a href="../lessons/0011-compare-trend-models.html">Lesson 11</a>.
         Vocabulary in the
         <a href="eval-glossary.html">eval glossary</a>; triage in
         <a href="grader-triage.html">grader triage</a>.
+        Single-model reference runs live under <code>evals/baselines/</code>; multi-model cards under
+        <code>evals/comparisons/</code>.
       </footer>
     </main>
   </body>

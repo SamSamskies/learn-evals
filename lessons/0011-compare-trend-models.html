@@ -1,0 +1,231 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Compare trend models · Learn Evals</title>
+    <link rel="stylesheet" href="../assets/course.css" />
+    <script src="../assets/quiz.js" defer></script>
+  </head>
+  <body>
+    <main>
+      <header>
+        <p class="eyebrow">Lesson 11 · 25 minutes</p>
+        <h1>Compare models on trend Level 1</h1>
+        <p class="lede">
+          You have a green trend baseline. Now ask whether that model still wins when a second
+          candidate faces the same three pressures.
+        </p>
+      </header>
+
+      <section>
+        <p class="kicker">The tangible win</p>
+        <p>
+          By the end, you will have a trend comparison card under
+          <code>evals/comparisons/</code> for <code>gemma4:26b-mlx</code> versus one contrast model
+          (start with <code>medgemma1.5:latest</code> unless you have a stronger candidate), and a
+          one-sentence decision: keep gemma4 as the trend default, or not.
+        </p>
+
+        <div class="note">
+          <strong>What you just shipped:</strong>
+          <a href="0010-live-trend-harness.html">Lesson 10</a> left a clean first baseline —
+          <code>gemma4:26b-mlx</code> 3/3 on trend Level 1 (~54 s), plus a
+          <code>baseline-live-evals</code> skill that writes triage reports to
+          <code>evals/baselines/</code>. That report is the reference row. This lesson is
+          <a href="0005-compare-ollama-models.html">Lesson 5</a> replayed on the trend axis: same
+          fair-compare rule, new suite flag.
+        </div>
+
+        <div class="formula" aria-label="Fair comparison rule">
+          fair trend compare = same TREND_CHAT_LEVEL1_CASES + same graders + one changed model
+        </div>
+
+        <p>
+          <a href="https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents"
+            >Anthropic</a
+          >
+          treats a static task bank as the way model upgrades stop being guess-and-check. Your bank
+          is already frozen. The only new discipline: keep panel and trend pass rates in
+          <em>separate</em> cards — never average them into one vanity score.
+        </p>
+      </section>
+
+      <section>
+        <h2>Baseline folder vs comparison folder</h2>
+        <div class="cards">
+          <article class="card">
+            <h3><code>evals/baselines/</code></h3>
+            <p>
+              One suite, one model, triage-first. Use <code>baseline-live-evals</code> when you need
+              a reference run before shopping alternatives.
+            </p>
+          </article>
+          <article class="card">
+            <h3><code>evals/comparisons/</code></h3>
+            <p>
+              Same suite, two or more models. Use <code>compare-live-evals</code> when the question
+              is “which default?” — never rewrite asserts mid-bake-off.
+            </p>
+          </article>
+          <article class="card">
+            <h3>Exact tags</h3>
+            <p>
+              Your baseline is <code>gemma4:26b-mlx</code>, not a vague “gemma4.” Compare against
+              that tag unless you deliberately re-baseline a different pull.
+            </p>
+          </article>
+        </div>
+
+        <article
+          class="question"
+          data-quiz
+          data-correct="base"
+          data-explanation="Baselines are single-model reference/triage runs; multi-model A/B cards go under comparisons."
+          data-hint="Ask which folder your Lesson 10 report already lives in."
+        >
+          <h3>What belongs in <code>evals/baselines/</code>?</h3>
+          <div class="answers">
+            <button type="button" data-answer="base" aria-pressed="false">Single-model triage report</button>
+            <button type="button" data-answer="duel" aria-pressed="false">Multi-model comparison card</button>
+            <button type="button" data-answer="stub" aria-pressed="false">Canned offline stub scores</button>
+          </div>
+          <p class="feedback" data-feedback aria-live="polite"></p>
+        </article>
+
+        <article
+          class="question"
+          data-quiz
+          data-correct="hold"
+          data-explanation="Fair model comparison freezes cases, graders, and harness; only the model id changes."
+          data-hint="Ask which option isolates the model as the only independent variable."
+        >
+          <h3>During a two-model trend bake-off, what stays fixed?</h3>
+          <div class="answers">
+            <button type="button" data-answer="hold" aria-pressed="false">Same cases and graders</button>
+            <button type="button" data-answer="swap" aria-pressed="false">New cases each model</button>
+            <button type="button" data-answer="edit" aria-pressed="false">Tweaked prompts mid run</button>
+          </div>
+          <p class="feedback" data-feedback aria-live="polite"></p>
+        </article>
+
+        <article
+          class="question"
+          data-quiz
+          data-correct="proof"
+          data-explanation="Panel evidence does not transfer automatically — re-run the trend suite before declaring a shared default."
+          data-hint="What did Lesson 5 prove about medgemma on panels that still needs checking on trends?"
+        >
+          <h3>Panel default is gemma4. First move for trend defaults?</h3>
+          <div class="answers">
+            <button type="button" data-answer="proof" aria-pressed="false">Run the trend suite bake-off</button>
+            <button type="button" data-answer="copy" aria-pressed="false">Reuse panel winner as-is</button>
+            <button type="button" data-answer="fast" aria-pressed="false">Prefer the snappier model</button>
+          </div>
+          <p class="feedback" data-feedback aria-live="polite"></p>
+        </article>
+      </section>
+
+      <section>
+        <h2>Quality still beats speed</h2>
+        <p>
+          On panels, <code>medgemma1.5:latest</code> was faster and still lost on a safety assert. Trend
+          chat has its own failure modes — invented direction, missing multi-point citation, soft
+          diagnosis on a leading ask. Rank the same way:
+          <a href="../reference/model-comparison-card.html">quality → latency</a>. A faster model
+          that invents VLDL or diagnoses “high cholesterol” is a capability miss, not a UX win.
+        </p>
+        <p>
+          <a href="https://hamel.dev/blog/posts/evals-faq/">Hamel</a>
+          still warns against endless model shopping without error analysis. You already triaged the
+          gemma4 transcripts. The bake-off is justified now because the suite is calm enough to
+          trust.
+        </p>
+      </section>
+
+      <section>
+        <h2>Practice: fill two trend comparison rows</h2>
+        <div class="exercise">
+          <p>In LocalLab, keep harness and graders frozen. Run:</p>
+          <ol>
+            <li>
+              Confirm the reference row already exists (or re-run baseline):
+              <code>npm run test:live-eval -- --suite trend --model gemma4:26b-mlx</code>
+              — expect 3/3 from your
+              <code>evals/baselines/</code> report.
+            </li>
+            <li>
+              Run the same command with one contrast model you care about (default suggestion:
+              <code>medgemma1.5:latest</code>). Raise <code>--timeout-ms</code> if needed.
+            </li>
+            <li>
+              Prefer the <code>compare-live-evals</code> skill (or fill the
+              <a href="../reference/model-comparison-card.html">comparison card</a>
+              by hand) so both rows land under <code>evals/comparisons/</code> with pass rate,
+              failing assertion ids, wall-clock, and a one-sentence decision note.
+            </li>
+            <li>
+              If a fail appears, triage with the
+              <a href="../reference/grader-triage.html">grader-triage ritual</a>
+              before declaring a winner — true fail vs grader FP vs flake.
+            </li>
+          </ol>
+          <p>
+            Do not change assertions mid-bake-off. Do not blend panel + trend into one pass rate. Do
+            not ship a “shared default” until both suites have cards.
+          </p>
+        </div>
+
+        <div class="checkpoint">
+          <strong>Retrieval checkpoint</strong>
+          <p>
+            Tell me: (1) the two model ids, (2) pass rate and failing assertion ids for each on
+            <em>trend</em>, (3) whether you’d keep <code>gemma4:26b-mlx</code> as the trend-chat
+            default and why in one sentence. I’ll pressure-test whether panel and trend defaults
+            should stay aligned.
+          </p>
+        </div>
+      </section>
+
+      <section>
+        <h2>Primary reading</h2>
+        <p>
+          Skim Anthropic’s notes on why evals speed
+          <a href="https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents"
+            >model adoption</a
+          >
+          and capability vs regression. Re-read Hamel’s FAQ
+          <a href="https://hamel.dev/blog/posts/evals-faq/"
+            >“How much time should I spend on model selection?”</a
+          >
+          so this bake-off stays a decision ritual, not a shopping spree.
+        </p>
+      </section>
+
+      <section>
+        <h2>Where this leads</h2>
+        <p>
+          Once trend has an evidence-based default, you can treat both suites as ship gates for chat
+          model changes — and only then consider prompt experiments or the banked flat/stable fourth
+          case if live triage shows invented movement.
+        </p>
+      </section>
+
+      <footer>
+        Builds on
+        <a href="0005-compare-ollama-models.html">Lesson 5</a>
+        and
+        <a href="0010-live-trend-harness.html">Lesson 10</a>.
+        Claims grounded in
+        <a href="https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents">Anthropic</a>,
+        <a href="https://hamel.dev/blog/posts/evals-faq/">Hamel’s evals FAQ</a>,
+        the
+        <a href="../reference/eval-glossary.html">eval glossary</a>,
+        and the
+        <a href="../reference/model-comparison-card.html">comparison card</a>.
+        Ask follow-up questions if the baseline vs comparison skill split, or matching exact model
+        tags, is unclear.
+      </footer>
+    </main>
+  </body>
+</html>

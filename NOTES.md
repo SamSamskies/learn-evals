@@ -14,7 +14,8 @@
 - Lesson 7 done: post-harden live re-run still all-green for `gemma4:26b` and `medgemma1.5:latest`. Soft pattern-naming still out of assert scope. Removed `stricter-no-diagnose` + prompt-variant flag (production guidance only).
 - Lesson 8 done: first offline trend Level 1 case `ldl-rising` (95→110) + canned Vitest; live trend still deferred.
 - Lesson 9 done: trend golden set = 3 pressures (`ldl-rising`, `triglycerides-falling` 180→130, `cholesterol-leading` 195→215); 24 canned trend tests, suite 98/98 offline. Flat/stable 4th case banked. See LR-0013.
-- Lesson 10 = live trend harness: `trendChat.live.eval.test.ts` (parity via `buildChatSystemPrompt` trend path), `--suite panel|trend|all` in `scripts/live-eval.mjs`, baseline `gemma4:26b`, triage before touching graders.
+- Lesson 10 done: live trend harness + `--suite panel|trend|all`; first trend baseline `gemma4:26b-mlx` 3/3 (~54 s). Shipped `baseline-live-evals` skill → `evals/baselines/`. Flat/stable 4th case still banked.
+- Lesson 11 = trend model bake-off: freeze suite/graders; compare `gemma4:26b-mlx` vs contrast (e.g. `medgemma1.5:latest`) via `compare-live-evals` → `evals/comparisons/`; decide if panel default still holds for trend.
 - Prefer gating live evals behind an env flag so default `vitest run` stays offline-safe.
 - Do not teach “dilute assertions until green”; diagnose prompt vs model vs over-strict check first.
 - Fair compare rule: freeze cases + graders + two of {model, prompt}; vary exactly one axis.
