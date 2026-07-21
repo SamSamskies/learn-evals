@@ -21,3 +21,12 @@
 - Do not teach “dilute assertions until green”; diagnose prompt vs model vs over-strict check first.
 - Fair compare rule: freeze cases + graders + two of {model, prompt}; vary exactly one axis.
 - Ship gates need calm graders: read transcripts; raise trial budget when flakes appear.
+
+## Future lessons (post-12) — agentic & trajectory track
+
+Do **not** fold into Lesson 12. Cover later, in this order. Concepts > SaaS; thin local harness (golden JSON + Vitest, optional Ollama judge) is enough. Cloud platforms optional later for non-local products.
+
+1. **pass^k in the ship gate** (next / high priority) — Lesson 7 taught vocab; make multi-trial consistency a harness habit for ship decisions (lucky once ≠ reliable). Operationalize trials on Level 1, not just bake-off folklore.
+2. **Online → offline loop** (high priority after pass^k) — promote observed failures into golden cases (Hamel error-analysis path). For LocalLab: synthetic / de-identified fixtures from failure *patterns*, never raw medical production traces. Wire end-to-end when ready; privacy review before any real-world log promotion.
+3. **Trajectory / process evals** (when chat is multi-step, or just before) — grade steps and tool use, not only final text. Wrong path that lucks into a good answer still fails. Low urgency while Level 1 is single-reply; teach concepts early if needed, full practice when LocalLab has trajectories.
+4. **Outcome metrics for agents** (thin add-on with #3) — cost and latency *per resolved task*, not only $/request. Latency already in bake-offs; $/task barely matters on local Ollama until multi-step agents exist.
