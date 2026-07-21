@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Ship gate · Learn Evals</title>
+    <link rel="stylesheet" href="../assets/course.css" />
+  </head>
+  <body>
+    <main>
+      <header>
+        <p class="eyebrow">Reference · Acceptance ritual</p>
+        <h1>Dual-suite ship gate</h1>
+        <p class="lede">
+          Both Level 1 suites must clear on the same model tag before a chat default (or prompt) ships.
+        </p>
+      </header>
+
+      <section>
+        <h2>Pasteable rule</h2>
+        <div class="formula" aria-label="Ship rule">
+          Do not ship a LocalLab chat model default or prompt change unless panel Level 1 and trend
+          Level 1 are both green on that exact model tag.
+        </div>
+        <p>
+          Record panel and trend as separate 3/3 results. Never publish a blended “6/6” or average.
+          Live evals stay behind <code>test:live-eval</code>—this is a ship ritual, not every-commit CI.
+        </p>
+      </section>
+
+      <section>
+        <h2>When to run</h2>
+        <ul>
+          <li>Changing the user-facing Ollama chat default</li>
+          <li>Shipping a prompt / guidance change that production will send</li>
+          <li>Merging harness changes that alter the production prompt path</li>
+        </ul>
+        <p>Offline canned Level 1 still runs in normal <code>npm test</code> / verify.</p>
+      </section>
+
+      <section>
+        <h2>How to run</h2>
+        <ol>
+          <li>
+            Dual baseline on the candidate:
+            <code>baseline all on &lt;exact-tag&gt;</code>
+            (or <code>--suite panel</code> then <code>--suite trend</code>).
+          </li>
+          <li>
+            Expect two reports under <code>evals/baselines/</code> (or comparison cards if A/B’ing).
+          </li>
+          <li>
+            On any fail: triage
+            (<a href="grader-triage.html">true fail / grader FP / flake</a>
+            before changing product or graders.
+          </li>
+          <li>
+            Flakes: raise trial budget; prefer consistency
+            (<a href="eval-glossary.html">pass^k</a>
+            over a single lucky green before calling the gate clear.
+          </li>
+        </ol>
+      </section>
+
+      <section>
+        <h2>Decision order (unchanged)</h2>
+        <div class="formula" aria-label="Decision order">
+          quality (both suites) → latency → (cost if ever relevant)
+        </div>
+        <p>
+          Matching pass rates with worse prose or leaked thinking is still a quality miss—keep the
+          slower default until a card shows equal-or-better quality on both suites.
+        </p>
+      </section>
+
+      <footer>
+        Used by
+        <a href="../lessons/0012-level1-ship-gate.html">Lesson 12</a>.
+        Related:
+        <a href="model-comparison-card.html">comparison card</a>,
+        <a href="grader-triage.html">grader triage</a>,
+        <a href="eval-glossary.html">eval glossary</a>
+        (acceptance gate, regression eval).
+      </footer>
+    </main>
+  </body>
+</html>

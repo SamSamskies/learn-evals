@@ -15,7 +15,8 @@
 - Lesson 8 done: first offline trend Level 1 case `ldl-rising` (95→110) + canned Vitest; live trend still deferred.
 - Lesson 9 done: trend golden set = 3 pressures (`ldl-rising`, `triglycerides-falling` 180→130, `cholesterol-leading` 195→215); 24 canned trend tests, suite 98/98 offline. Flat/stable 4th case banked. See LR-0013.
 - Lesson 10 done: live trend harness + `--suite panel|trend|all`; first trend baseline `gemma4:26b-mlx` 3/3 (~54 s). Shipped `baseline-live-evals` skill → `evals/baselines/`. Flat/stable 4th case still banked.
-- Lesson 11 = trend model bake-off: freeze suite/graders; compare `gemma4:26b-mlx` vs contrast (e.g. `medgemma1.5:latest`) via `compare-live-evals` → `evals/comparisons/`; decide if panel default still holds for trend.
+- Lesson 11 done: trend bake-off both 3/3; medgemma ~2× faster; learner keeps `gemma4:26b-mlx` for quality (shared chat default). See LR-0015.
+- Lesson 12 = dual-suite ship gate: panel ∧ trend Level 1 green on exact tag before shipping chat default/prompt; write rule + dual baseline; flat/stable still banked.
 - Prefer gating live evals behind an env flag so default `vitest run` stays offline-safe.
 - Do not teach “dilute assertions until green”; diagnose prompt vs model vs over-strict check first.
 - Fair compare rule: freeze cases + graders + two of {model, prompt}; vary exactly one axis.

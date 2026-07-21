@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Level 1 as ship gate · Learn Evals</title>
+    <link rel="stylesheet" href="../assets/course.css" />
+    <script src="../assets/quiz.js" defer></script>
+  </head>
+  <body>
+    <main>
+      <header>
+        <p class="eyebrow">Lesson 12 · 25 minutes</p>
+        <h1>Ship only when both suites clear</h1>
+        <p class="lede">
+          Panel and trend both have an evidence-based default. Now make that default a rule, not a
+          vibe: Level 1 is the gate.
+        </p>
+      </header>
+
+      <section>
+        <p class="kicker">The tangible win</p>
+        <p>
+          By the end, you will have a written dual-suite
+          <a href="../reference/ship-gate.html">acceptance gate</a>
+          for LocalLab chat, a fresh dual baseline on
+          <code>gemma4:26b-mlx</code> (panel <em>and</em> trend, separate scores), and a one-sentence
+          ship rule you can paste into a PR or skill.
+        </p>
+
+        <div class="note">
+          <strong>What you just decided:</strong>
+          <a href="0011-compare-trend-models.html">Lesson 11</a> left both models at 3/3 on trend;
+          medgemma was ~2× faster, and you still kept
+          <code>gemma4:26b-mlx</code> for output quality—same order as
+          <a href="0005-compare-ollama-models.html">Lesson 5</a> on panels. Defaults are aligned.
+          This lesson graduates those green suites from “bake-off evidence” into “must pass before
+          ship.”
+        </div>
+
+        <div class="formula" aria-label="Dual-suite ship gate">
+          ship chat default = panel Level 1 green ∧ trend Level 1 green on the same model tag
+        </div>
+
+        <p>
+          <a href="https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents"
+            >Anthropic</a
+          >
+          separates capability evals (“can we do this at all?”) from regression evals (“do we still
+          handle what we used to?”). High-pass capability tasks
+          <em>graduate</em> into a regression suite run before changes ship. Your six Level 1 cases
+          have earned that promotion—protect them; do not dilute them to stay green.
+        </p>
+      </section>
+
+      <section>
+        <h2>Two suites, one gate</h2>
+        <div class="cards">
+          <article class="card">
+            <h3>Panel Level 1</h3>
+            <p>
+              <code>glucose-high</code>, <code>all-normal-cbc</code>,
+              <code>elevated-tsh-leading</code> — grounding, invent-forbids, diagnose/prescribe
+              safety.
+            </p>
+          </article>
+          <article class="card">
+            <h3>Trend Level 1</h3>
+            <p>
+              <code>ldl-rising</code>, <code>triglycerides-falling</code>,
+              <code>cholesterol-leading</code> — direction, multi-point citation, leading-ask
+              restraint.
+            </p>
+          </article>
+          <article class="card">
+            <h3>Never blend</h3>
+            <p>
+              Report 3/3 and 3/3, not “6/6.” A panel miss and a trend miss are different product
+              failures. Skills already write one file per suite.
+            </p>
+          </article>
+        </div>
+
+        <article
+          class="question"
+          data-quiz
+          data-correct="both"
+          data-explanation="The gate is conjunctive: both suites must clear on the candidate tag before you ship a shared chat default."
+          data-hint="Ask what your mission says about shipping when Level 1 supports the decision."
+        >
+          <h3>Candidate model is 3/3 on trend only. Ship it?</h3>
+          <div class="answers">
+            <button type="button" data-answer="both" aria-pressed="false">No — panel must clear too</button>
+            <button type="button" data-answer="trend" aria-pressed="false">Yes — trend suite is enough</button>
+            <button type="button" data-answer="speed" aria-pressed="false">Yes — if wall-clock is lower</button>
+          </div>
+          <p class="feedback" data-feedback aria-live="polite"></p>
+        </article>
+
+        <article
+          class="question"
+          data-quiz
+          data-correct="grad"
+          data-explanation="Anthropic: high-pass capability tasks graduate into a near-100% regression suite that blocks backsliding."
+          data-hint="Capability vs regression — which role do your green Level 1 cases play now?"
+        >
+          <h3>Your Level 1 cases now mostly act as…</h3>
+          <div class="answers">
+            <button type="button" data-answer="grad" aria-pressed="false">A regression ship gate</button>
+            <button type="button" data-answer="hill" aria-pressed="false">A low-pass hill climb</button>
+            <button type="button" data-answer="demo" aria-pressed="false">A one-off demo list</button>
+          </div>
+          <p class="feedback" data-feedback aria-live="polite"></p>
+        </article>
+
+        <article
+          class="question"
+          data-quiz
+          data-correct="keep"
+          data-explanation="Quality already beat ~2× speed twice. A green gate on gemma4 is the bar; do not reopen shopping for latency alone."
+          data-hint="What did you decide when medgemma matched pass rate but felt worse?"
+        >
+          <h3>Medgemma matches 3/3 both suites, still ~2× faster. Default?</h3>
+          <div class="answers">
+            <button type="button" data-answer="keep" aria-pressed="false">Keep gemma4 unless quality slips</button>
+            <button type="button" data-answer="swap" aria-pressed="false">Swap default for lower latency</button>
+            <button type="button" data-answer="blend" aria-pressed="false">Average suites into one score</button>
+          </div>
+          <p class="feedback" data-feedback aria-live="polite"></p>
+        </article>
+      </section>
+
+      <section>
+        <h2>What the gate blocks</h2>
+        <p>
+          Use the gate when you would change the
+          <em>user-facing</em> chat default model, ship a prompt/guidance change, or merge a harness
+          change that alters what production sends the model. Offline canned tests still run in normal
+          <code>npm test</code>; live Level 1 stays gated and intentional—this is a ship ritual, not
+          every commit’s CI tax.
+        </p>
+        <p>
+          If a suite fails, run the
+          <a href="../reference/grader-triage.html">triage ritual</a>
+          before you “fix” the product: true fail vs grader FP vs flake. Flakes mean raise trial
+          budget or harden the assert—do not ship on a lucky single green
+          (<a href="../reference/eval-glossary.html">pass^k</a>
+          matters more than pass@1 for chat defaults).
+        </p>
+      </section>
+
+      <section>
+        <h2>Practice: write the rule, then prove it</h2>
+        <div class="exercise">
+          <p>In LocalLab:</p>
+          <ol>
+            <li>
+              Write the ship rule somewhere durable (README evals section, a short
+              <code>ship-gate-live-evals</code> skill, or a checklist comment)—one sentence is enough.
+              Use the wording on the
+              <a href="../reference/ship-gate.html">ship-gate sheet</a>
+              if you want a pasteable template.
+            </li>
+            <li>
+              Run a dual baseline on the chosen default (skills already split
+              <code>all</code> into two suite passes):
+              ask for <code>baseline all on gemma4:26b-mlx</code>, or run
+              <code>npm run test:live-eval -- --suite panel --model gemma4:26b-mlx</code>
+              then the same with <code>--suite trend</code>. Expect two reports under
+              <code>evals/baselines/</code>, each 3/3.
+            </li>
+            <li>
+              Confirm the exact tag matches production config (or document the one-line override). A
+              green run on a different pull is not the gate you think it is.
+            </li>
+            <li>
+              Optional stress: name one hypothetical change that would be
+              <em>blocked</em> today (e.g. “default to medgemma for speed”) and one that would be
+              <em>allowed</em> only after a dual green (e.g. “try qwen on both suites”).
+            </li>
+          </ol>
+          <p>
+            Do not average panel + trend. Do not skip panel because trend just passed. Do not add the
+            banked flat/stable case mid-gate unless triage shows invented movement.
+          </p>
+        </div>
+
+        <div class="checkpoint">
+          <strong>Retrieval checkpoint</strong>
+          <p>
+            Tell me: (1) your one-sentence ship rule, (2) panel and trend pass rates + wall-clock for
+            <code>gemma4:26b-mlx</code> on this dual baseline, (3) where you wrote the rule. I’ll
+            pressure-test whether the gate is conjunctive and tag-exact.
+          </p>
+        </div>
+      </section>
+
+      <section>
+        <h2>Primary reading</h2>
+        <p>
+          Re-read Anthropic’s
+          <a href="https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents"
+            >capability vs regression</a
+          >
+          section—especially graduating high-pass tasks into a continuous regression suite. Skim
+          OpenAI’s
+          <a href="https://platform.openai.com/docs/guides/evals">Working with evals</a>
+          framing of criteria + datasets as the thing you run before you change the system.
+        </p>
+      </section>
+
+      <section>
+        <h2>Where this leads</h2>
+        <p>
+          With a dual-suite gate, you can grow Level 1 from observed failures (flat/stable if
+          transcripts invent movement), raise trial budgets before flaky ships, or climb new
+          capability hills without letting regressions sneak through. Extraction evals stay a later
+          track—outside this chat mission.
+        </p>
+      </section>
+
+      <footer>
+        Builds on
+        <a href="0005-compare-ollama-models.html">Lesson 5</a>
+        and
+        <a href="0011-compare-trend-models.html">Lesson 11</a>.
+        Claims grounded in
+        <a href="https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents">Anthropic</a>,
+        <a href="https://platform.openai.com/docs/guides/evals">OpenAI’s eval guide</a>,
+        the
+        <a href="../reference/eval-glossary.html">eval glossary</a>,
+        and the
+        <a href="../reference/ship-gate.html">ship-gate sheet</a>.
+        Ask follow-up questions if “graduate to regression” or keeping suite scores separate is
+        unclear.
+      </footer>
+    </main>
+  </body>
+</html>
