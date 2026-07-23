@@ -1,0 +1,262 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>pass^k in the ship gate · Learn Evals</title>
+    <link rel="stylesheet" href="../assets/course.css" />
+    <script src="../assets/quiz.js" defer></script>
+  </head>
+  <body>
+    <main>
+      <header>
+        <p class="eyebrow">Lesson 13 · 25 minutes</p>
+        <h1>Lucky once is not a ship</h1>
+        <p class="lede">
+          You have a dual-suite gate. Now make it demand consistency—not a single green dual
+          baseline.
+        </p>
+      </header>
+
+      <section>
+        <p class="kicker">The tangible win</p>
+        <p>
+          By the end, you will update the LocalLab ship rule to require
+          <a href="../reference/eval-glossary.html">pass^k</a>
+          (start with <code>k = 3</code>) on <em>both</em> panel and trend Level 1, wire that trial
+          budget into the ship-gate skill (or harness flags), and run one multi-trial dual gate on
+          <code>gemma4:26b-mlx</code> that you can report as pass^3—not pass@1 folklore.
+        </p>
+
+        <div class="note">
+          <strong>What you just proved:</strong>
+          <a href="0012-level1-ship-gate.html">Lesson 12</a> made the dual gate real. You also hit a
+          grader FP at the gate, hardened the assert, and went green—so triage still applies before
+          you trust any score. Lesson 7 taught
+          <code>pass@k</code> / <code>pass^k</code> as vocabulary and a manual 3-run check. This
+          lesson makes consistency a
+          <em>harness habit</em> for ship decisions.
+        </div>
+
+        <div class="formula" aria-label="Consistency ship gate">
+          ship = panel pass^k ∧ trend pass^k on the exact tag (start k = 3)
+        </div>
+
+        <p>
+          <a href="https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents"
+            >Anthropic</a
+          >
+          is blunt about nondeterminism: a task that passed once may fail next time.
+          <code>pass@k</code> asks whether <em>at least one</em> of k trials succeeds—it rises with
+          k. <code>pass^k</code> asks whether <em>all</em> k trials succeed—it falls with k. For
+          customer-facing agents, they prefer consistency. LocalLab chat defaults are
+          customer-facing. A single lucky dual baseline is pass@1 dressed as a ship call.
+        </p>
+      </section>
+
+      <section>
+        <h2>Two metrics, opposite stories</h2>
+        <div class="cards">
+          <article class="card">
+            <h3>pass@k</h3>
+            <p>
+              At least one success in k attempts. More shots → higher score. Fine when one good
+              solution is enough (some coding tools).
+            </p>
+          </article>
+          <article class="card">
+            <h3>pass^k</h3>
+            <p>
+              Every trial succeeds. More trials → harder bar. Right for chat you expect to behave
+              the same way every time.
+            </p>
+          </article>
+          <article class="card">
+            <h3>At k = 1</h3>
+            <p>
+              They are identical. That is why one green dual baseline feels decisive and still
+              understates flake risk.
+            </p>
+          </article>
+        </div>
+
+        <p>
+          Anthropic’s illustration: if a task succeeds ~75% of the time, three independent trials
+          all green is only about (0.75)³ ≈ 42%. Your suites look calmer than that after grader
+          hardening—but you still need the ritual that would catch a regressing flake before ship.
+        </p>
+
+        <article
+          class="question"
+          data-quiz
+          data-correct="hold"
+          data-explanation="One green dual is pass@1. Chat defaults need all trials clear—pass^k—before you call the gate open."
+          data-hint="Ask which Anthropic metric rewards lucky single runs."
+        >
+          <h3>Dual suites green once; a redo flakes one case. Ship?</h3>
+          <div class="answers">
+            <button type="button" data-answer="hold" aria-pressed="false">
+              Block until pass^k clears
+            </button>
+            <button type="button" data-answer="ship" aria-pressed="false">
+              Ship after one green dual
+            </button>
+            <button type="button" data-answer="fast" aria-pressed="false">
+              Ship if wall-clock is lower
+            </button>
+          </div>
+          <p class="feedback" data-feedback aria-live="polite"></p>
+        </article>
+
+        <article
+          class="question"
+          data-quiz
+          data-correct="all"
+          data-explanation="pass^k = all k trials succeed. pass@k = at least one succeeds. Ship gates for chat care about the harder bar."
+          data-hint="Caret means “all”; at-sign means “at least one.”"
+        >
+          <h3>What does pass^k require?</h3>
+          <div class="answers">
+            <button type="button" data-answer="all" aria-pressed="false">All k trials succeed</button>
+            <button type="button" data-answer="one" aria-pressed="false">One of k succeeds</button>
+            <button type="button" data-answer="avg" aria-pressed="false">Mean of k succeeds</button>
+          </div>
+          <p class="feedback" data-feedback aria-live="polite"></p>
+        </article>
+
+        <article
+          class="question"
+          data-quiz
+          data-correct="cons"
+          data-explanation="As k grows, pass@k rises and pass^k falls. For defaults users hit every time, you want the metric that punishes inconsistency."
+          data-hint="Which story gets harder when you demand more repeats?"
+        >
+          <h3>For a chat default, as k grows you care that…</h3>
+          <div class="answers">
+            <button type="button" data-answer="cons" aria-pressed="false">
+              Consistency across trials matters
+            </button>
+            <button type="button" data-answer="luck" aria-pressed="false">
+              One lucky success matters
+            </button>
+            <button type="button" data-answer="wall" aria-pressed="false">
+              Wall-clock alone matters most
+            </button>
+          </div>
+          <p class="feedback" data-feedback aria-live="polite"></p>
+        </article>
+      </section>
+
+      <section>
+        <h2>Operational definition for LocalLab</h2>
+        <p>
+          Keep suites separate. Do not invent a blended “6/6 × 3.” For each suite, with fixed model
+          tag, prompt, cases, and graders:
+        </p>
+        <ol>
+          <li>Choose <code>k</code> (start at 3—same budget Lesson 7 used for agreement).</li>
+          <li>
+            Run the live suite <code>k</code> times (or each case <code>k</code> isolated trials—same
+            budget either way; prefer whatever your harness already supports cleanly).
+          </li>
+          <li>
+            Suite clears pass^k only if <em>every</em> trial of <em>every</em> case is green. One
+            red anywhere → gate closed for that suite.
+          </li>
+          <li>
+            Dual gate clears only if panel pass^k <em>and</em> trend pass^k both clear on the
+            <em>exact</em> production tag.
+          </li>
+        </ol>
+        <p>
+          On red: still
+          <a href="../reference/grader-triage.html">triage</a>
+          (true fail / grader FP / flake) before changing product. You already saw an FP at the
+          Lesson 12 gate—multi-trial does not replace transcript reading; it catches flakes that a
+          single run misses.
+        </p>
+        <div class="formula" aria-label="Report shape">
+          report: panel pass^3 = yes/no · trend pass^3 = yes/no · wall-clock per suite · failing ids
+        </div>
+      </section>
+
+      <section>
+        <h2>Practice: put pass^k in the gate</h2>
+        <div class="exercise">
+          <p>In LocalLab:</p>
+          <ol>
+            <li>
+              Update the ship rule (skill, README, or checklist) so a chat default/prompt ships only
+              when panel <strong>and</strong> trend Level 1 clear
+              <code>pass^k</code> with <code>k = 3</code> on the exact tag. Pasteable wording is on
+              the
+              <a href="../reference/ship-gate.html">ship-gate sheet</a>.
+            </li>
+            <li>
+              Wire the budget into the ritual: skill arg, env flag, or documented
+              “run live eval three times / aggregate”—whichever matches your harness with least
+              drama. The point is habit, not a new SaaS.
+            </li>
+            <li>
+              Run the multi-trial dual gate on <code>gemma4:26b-mlx</code>. Save transcripts (or
+              failing replies) if anything reds. Report panel pass^3, trend pass^3, and wall-clock.
+            </li>
+            <li>
+              Optional: note one change you would <em>not</em> ship on a single green dual but
+              <em>would</em> reconsider after pass^3 (e.g. a prompt tweak that looked fine once).
+            </li>
+          </ol>
+          <p>
+            Do not raise <code>k</code> forever to manufacture confidence—3 is enough to start. Do
+            not dilute asserts if a trial flakes; triage first. Do not average panel with trend.
+          </p>
+        </div>
+
+        <div class="checkpoint">
+          <strong>Retrieval checkpoint</strong>
+          <p>
+            Tell me: (1) your updated one-sentence ship rule including <code>k</code>, (2) how the
+            skill/harness records trials, (3) panel and trend pass^3 + wall-clock on
+            <code>gemma4:26b-mlx</code>, (4) whether anything red was true fail vs FP vs flake.
+          </p>
+        </div>
+      </section>
+
+      <section>
+        <h2>Primary reading</h2>
+        <p>
+          Read Anthropic’s
+          <a href="https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents"
+            >“How to think about non-determinism”</a
+          >
+          section—especially the pass@k vs pass^k divergence as k grows. Skim the transcript-check
+          reminder in the same piece; multi-trial without reading reds recreates Lesson 6 noise.
+        </p>
+      </section>
+
+      <section>
+        <h2>Where this leads</h2>
+        <p>
+          With pass^k in the gate, the next high-leverage move is growing Level 1 from observed
+          failures (online → offline / error analysis)—still synthetic or de-identified fixtures
+          only. Flat/stable remains banked until a transcript invents movement.
+        </p>
+      </section>
+
+      <footer>
+        Builds on
+        <a href="0007-calibrate-noisy-graders.html">Lesson 7</a>
+        and
+        <a href="0012-level1-ship-gate.html">Lesson 12</a>.
+        Claims grounded in
+        <a href="https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents">Anthropic</a>,
+        the
+        <a href="../reference/eval-glossary.html">eval glossary</a>,
+        and the
+        <a href="../reference/ship-gate.html">ship-gate sheet</a>.
+        Ask follow-up questions if wiring trials into the skill without thrashing the harness is
+        unclear.
+      </footer>
+    </main>
+  </body>
+</html>

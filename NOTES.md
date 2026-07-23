@@ -16,17 +16,17 @@
 - Lesson 9 done: trend golden set = 3 pressures (`ldl-rising`, `triglycerides-falling` 180→130, `cholesterol-leading` 195→215); 24 canned trend tests, suite 98/98 offline. Flat/stable 4th case banked. See LR-0013.
 - Lesson 10 done: live trend harness + `--suite panel|trend|all`; first trend baseline `gemma4:26b-mlx` 3/3 (~54 s). Shipped `baseline-live-evals` skill → `evals/baselines/`. Flat/stable 4th case still banked.
 - Lesson 11 done: trend bake-off both 3/3; medgemma ~2× faster; learner keeps `gemma4:26b-mlx` for quality (shared chat default). See LR-0015.
-- Lesson 12 = dual-suite ship gate: panel ∧ trend Level 1 green on exact tag before shipping chat default/prompt; write rule + dual baseline; flat/stable still banked.
+- Lesson 12 done: dual-suite ship gate skill; grader FP at first gate run → harden assert → live all green. See LR-0016.
+- Lesson 13 = pass^k in the ship gate (k=3): lucky once ≠ reliable; wire trials into ship ritual. Flat/stable still banked.
 - Prefer gating live evals behind an env flag so default `vitest run` stays offline-safe.
 - Do not teach “dilute assertions until green”; diagnose prompt vs model vs over-strict check first.
 - Fair compare rule: freeze cases + graders + two of {model, prompt}; vary exactly one axis.
-- Ship gates need calm graders: read transcripts; raise trial budget when flakes appear.
+- Ship gates need calm graders: read transcripts; raise trial budget when flakes appear; gate clears on pass^k not pass@1.
 
-## Future lessons (post-12) — agentic & trajectory track
+## Future lessons (post-13) — agentic & trajectory track
 
-Do **not** fold into Lesson 12. Cover later, in this order. Concepts > SaaS; thin local harness (golden JSON + Vitest, optional Ollama judge) is enough. Cloud platforms optional later for non-local products.
+Cover later, in this order. Concepts > SaaS; thin local harness (golden JSON + Vitest, optional Ollama judge) is enough. Cloud platforms optional later for non-local products.
 
-1. **pass^k in the ship gate** (next / high priority) — Lesson 7 taught vocab; make multi-trial consistency a harness habit for ship decisions (lucky once ≠ reliable). Operationalize trials on Level 1, not just bake-off folklore.
-2. **Online → offline loop** (high priority after pass^k) — promote observed failures into golden cases (Hamel error-analysis path). For LocalLab: synthetic / de-identified fixtures from failure *patterns*, never raw medical production traces. Wire end-to-end when ready; privacy review before any real-world log promotion.
-3. **Trajectory / process evals** (when chat is multi-step, or just before) — grade steps and tool use, not only final text. Wrong path that lucks into a good answer still fails. Low urgency while Level 1 is single-reply; teach concepts early if needed, full practice when LocalLab has trajectories.
-4. **Outcome metrics for agents** (thin add-on with #3) — cost and latency *per resolved task*, not only $/request. Latency already in bake-offs; $/task barely matters on local Ollama until multi-step agents exist.
+1. **Online → offline loop** (next / high priority after pass^k) — promote observed failures into golden cases (Hamel error-analysis path). For LocalLab: synthetic / de-identified fixtures from failure *patterns*, never raw medical production traces. Wire end-to-end when ready; privacy review before any real-world log promotion.
+2. **Trajectory / process evals** (when chat is multi-step, or just before) — grade steps and tool use, not only final text. Wrong path that lucks into a good answer still fails. Low urgency while Level 1 is single-reply; teach concepts early if needed, full practice when LocalLab has trajectories.
+3. **Outcome metrics for agents** (thin add-on with #2) — cost and latency *per resolved task*, not only $/request. Latency already in bake-offs; $/task barely matters on local Ollama until multi-step agents exist.

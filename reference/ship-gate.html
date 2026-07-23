@@ -12,7 +12,8 @@
         <p class="eyebrow">Reference · Acceptance ritual</p>
         <h1>Dual-suite ship gate</h1>
         <p class="lede">
-          Both Level 1 suites must clear on the same model tag before a chat default (or prompt) ships.
+          Both Level 1 suites must clear pass^k on the same model tag before a chat default (or prompt)
+          ships.
         </p>
       </header>
 
@@ -20,11 +21,42 @@
         <h2>Pasteable rule</h2>
         <div class="formula" aria-label="Ship rule">
           Do not ship a LocalLab chat model default or prompt change unless panel Level 1 and trend
-          Level 1 are both green on that exact model tag.
+          Level 1 both clear pass^k (start k = 3) on that exact model tag.
         </div>
         <p>
-          Record panel and trend as separate 3/3 results. Never publish a blended “6/6” or average.
-          Live evals stay behind <code>test:live-eval</code>—this is a ship ritual, not every-commit CI.
+          Record panel and trend separately. Never publish a blended “6/6” or average. A suite
+          clears pass^k only when every trial of every case is green—one lucky dual baseline is
+          pass@1, not a ship. Live evals stay behind <code>test:live-eval</code>—this is a ship
+          ritual, not every-commit CI.
+        </p>
+      </section>
+
+      <section>
+        <h2>Trial budget (pass^k)</h2>
+        <ul>
+          <li>
+            <strong>Default k = 3</strong> for ship decisions (same budget used when calibrating
+            grader agreement).
+          </li>
+          <li>
+            <code>pass@k</code>: at least one of k trials succeeds — rises with k; not the ship bar
+            for chat defaults.
+          </li>
+          <li>
+            <code>pass^k</code>: all k trials succeed — falls with k; this is the consistency bar
+            for LocalLab chat.
+          </li>
+          <li>
+            Report shape:
+            <code>panel pass^3 = yes/no · trend pass^3 = yes/no · wall-clock · failing ids</code>
+          </li>
+        </ul>
+        <p>
+          Source:
+          <a href="https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents"
+            >Anthropic on nondeterminism</a
+          >. Vocabulary:
+          <a href="eval-glossary.html">pass@k / pass^k</a>.
         </p>
       </section>
 
@@ -42,12 +74,12 @@
         <h2>How to run</h2>
         <ol>
           <li>
-            Dual baseline on the candidate:
-            <code>baseline all on &lt;exact-tag&gt;</code>
-            (or <code>--suite panel</code> then <code>--suite trend</code>).
+            Dual multi-trial gate on the candidate (k = 3): run each suite three times on
+            <code>&lt;exact-tag&gt;</code> (skill arg, flag, or three documented live passes).
           </li>
           <li>
-            Expect two reports under <code>evals/baselines/</code> (or comparison cards if A/B’ing).
+            Expect panel and trend reports that state pass^3 (or fail with assertion ids)—not a
+            single-shot “3/3 once.”
           </li>
           <li>
             On any fail: triage
@@ -55,9 +87,7 @@
             before changing product or graders.
           </li>
           <li>
-            Flakes: raise trial budget; prefer consistency
-            (<a href="eval-glossary.html">pass^k</a>
-            over a single lucky green before calling the gate clear.
+            Gate clear means both suites pass^k—not a lucky pass@1 dual baseline.
           </li>
         </ol>
       </section>
@@ -75,12 +105,14 @@
 
       <footer>
         Used by
-        <a href="../lessons/0012-level1-ship-gate.html">Lesson 12</a>.
+        <a href="../lessons/0012-level1-ship-gate.html">Lesson 12</a>
+        and
+        <a href="../lessons/0013-passk-ship-gate.html">Lesson 13</a>.
         Related:
         <a href="model-comparison-card.html">comparison card</a>,
         <a href="grader-triage.html">grader triage</a>,
         <a href="eval-glossary.html">eval glossary</a>
-        (acceptance gate, regression eval).
+        (acceptance gate, regression eval, pass^k).
       </footer>
     </main>
   </body>
