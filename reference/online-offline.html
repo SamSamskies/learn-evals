@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Online → offline · Learn Evals</title>
+    <link rel="stylesheet" href="../assets/course.css" />
+  </head>
+  <body>
+    <main>
+      <header>
+        <p class="eyebrow">Reference · Suite growth</p>
+        <h1>Online → offline</h1>
+        <p class="lede">
+          Grow Level 1 from failure patterns you actually saw—not from imagined coverage checklists.
+        </p>
+      </header>
+
+      <section>
+        <h2>The loop</h2>
+        <div class="formula" aria-label="Promotion loop">
+          observe → categorize → synthesize fixture → assert → re-run (canned, then live)
+        </div>
+        <ol>
+          <li>
+            <strong>Observe</strong> — read transcripts from live evals, bake-offs, ship gates, or
+            (later) privacy-reviewed product traces.
+          </li>
+          <li>
+            <strong>Categorize</strong> — name the failure mode in one short phrase (e.g. “invents
+            direction on flat series”). Group repeats; ignore one-offs until they recur.
+          </li>
+          <li>
+            <strong>Synthesize</strong> — build a fake panel/trend fixture that triggers that mode.
+            Never paste raw medical production content into the repo.
+          </li>
+          <li>
+            <strong>Assert</strong> — add shared or fixture-specific Level 1 checks that fail a
+            canned “bad” reply and pass a canned “good” one.
+          </li>
+          <li>
+            <strong>Re-run</strong> — offline canned first; live when the case joins a suite used
+            for ship decisions. Re-clear pass^k before shipping if the case is in the gate.
+          </li>
+        </ol>
+      </section>
+
+      <section>
+        <h2>Error-analysis row (copy)</h2>
+        <div class="formula" aria-label="Spreadsheet columns">
+          source id · suite (panel|trend) · primary issue · category · promote? (y/n) · notes
+        </div>
+        <p>
+          Start tiny: a few rows beat a metrics dashboard. Patterns drive tests;
+          <a href="https://hamel.dev/notes/llm/officehours/erroranalysis.html">generic scores do not</a>.
+        </p>
+      </section>
+
+      <section>
+        <h2>LocalLab privacy bar</h2>
+        <ul>
+          <li>Fixtures stay synthetic or deliberately de-identified.</li>
+          <li>Promote the <em>pattern</em>, not the patient’s numbers or narrative.</li>
+          <li>
+            Real production logs need an explicit privacy review before any promotion
+            (see <a href="../RESOURCES.md">RESOURCES.md</a> Gaps).
+          </li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>What not to do</h2>
+        <ul>
+          <li>Invent a dozen cases from imagination with no observed pressure.</li>
+          <li>Dilute asserts so an observed true fail goes green.</li>
+          <li>Blend panel and trend when reporting the new case’s suite.</li>
+          <li>Skip canned Vitest before live Ollama.</li>
+        </ul>
+      </section>
+
+      <footer>
+        Used by
+        <a href="../lessons/0014-online-offline-loop.html">Lesson 14</a>.
+        Related:
+        <a href="eval-glossary.html">eval glossary</a>,
+        <a href="grader-triage.html">grader triage</a>,
+        <a href="ship-gate.html">ship gate</a>.
+        Sources:
+        <a href="https://hamel.dev/notes/llm/officehours/erroranalysis.html">Hamel error analysis</a>,
+        <a href="https://hamel.dev/blog/posts/evals/">Hamel evals</a>.
+      </footer>
+    </main>
+  </body>
+</html>

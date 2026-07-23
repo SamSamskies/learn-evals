@@ -1,0 +1,244 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Online → offline loop · Learn Evals</title>
+    <link rel="stylesheet" href="../assets/course.css" />
+    <script src="../assets/quiz.js" defer></script>
+  </head>
+  <body>
+    <main>
+      <header>
+        <p class="eyebrow">Lesson 14 · 25 minutes</p>
+        <h1>Grow the suite from failures</h1>
+        <p class="lede">
+          Your gate is consistent. Now grow Level 1 from patterns you actually saw—not from a
+          coverage wishlist.
+        </p>
+      </header>
+
+      <section>
+        <p class="kicker">The tangible win</p>
+        <p>
+          By the end, you will run a tiny
+          <a href="../reference/online-offline.html">error-analysis → promote</a>
+          pass: categorize at least three transcript rows, pick one uncovered failure
+          <em>pattern</em>, and ship one new synthetic Level 1 case (fixture + asserts + canned
+          Vitest) that locks that pattern offline.
+        </p>
+
+        <div class="note">
+          <strong>What you just proved:</strong>
+          <a href="0013-passk-ship-gate.html">Lesson 13</a> made the dual gate demand
+          <code>pass^3</code>, not a lucky once. The suite is now a ship ritual. Growing it by
+          inventing dimensions (Lesson 3 / 9) got you here; growing it from
+          <em>observed</em> misses is how suites stay honest as the product evolves—
+          <a href="https://hamel.dev/blog/posts/evals/">Hamel</a>’s continuous update loop.
+        </div>
+
+        <div class="formula" aria-label="Online to offline">
+          observed pattern → synthetic fixture → Level 1 assert → canned green (then live)
+        </div>
+
+        <p>
+          <a href="https://hamel.dev/notes/llm/officehours/erroranalysis.html">Error analysis</a>
+          starts with looking at conversations (or eval transcripts), not with a metrics catalog.
+          Categorize primary issues; write tests for modes that recur. Synthetic data expands
+          coverage—but start with 1–2 cases per issue. For LocalLab, “online” often means live-eval
+          and bake-off transcripts today; raw medical production logs stay out until a privacy review
+          clears them.
+        </p>
+      </section>
+
+      <section>
+        <h2>Observe, then promote</h2>
+        <div class="cards">
+          <article class="card">
+            <h3>Online signal</h3>
+            <p>
+              Live fails, ship-gate reds, bake-off misses, grader FPs you already triaged—and later,
+              privacy-reviewed product traces.
+            </p>
+          </article>
+          <article class="card">
+            <h3>Offline lock</h3>
+            <p>
+              A golden case that recreates the failure pressure with fake data, plus asserts that
+              fail a canned bad reply.
+            </p>
+          </article>
+          <article class="card">
+            <h3>Privacy bar</h3>
+            <p>
+              Promote the pattern (“invents rising LDL on flat visits”), never the patient’s real
+              numbers or narrative into the repo.
+            </p>
+          </article>
+        </div>
+
+        <article
+          class="question"
+          data-quiz
+          data-correct="patt"
+          data-explanation="You lock the failure mode with synthetic inputs. Raw medical production content stays out of fixtures until privacy review."
+          data-hint="Ask what LocalLab’s mission allows inside golden fixtures."
+        >
+          <h3>A live reply invents a marker. What enters the golden set?</h3>
+          <div class="answers">
+            <button type="button" data-answer="patt" aria-pressed="false">
+              Synthetic case locking that invent pattern
+            </button>
+            <button type="button" data-answer="raw" aria-pressed="false">
+              Raw patient transcript committed into git
+            </button>
+            <button type="button" data-answer="score" aria-pressed="false">
+              Generic fluency score replacing a fixture
+            </button>
+          </div>
+          <p class="feedback" data-feedback aria-live="polite"></p>
+        </article>
+
+        <article
+          class="question"
+          data-quiz
+          data-correct="look"
+          data-explanation="Hamel’s error-analysis path: look at data and categorize issues before writing more tests or shopping metrics."
+          data-hint="What does the office-hours note put before writing tests?"
+        >
+          <h3>Before adding another Level 1 case, you should first…</h3>
+          <div class="answers">
+            <button type="button" data-answer="look" aria-pressed="false">
+              Read transcripts and name failure modes
+            </button>
+            <button type="button" data-answer="dash" aria-pressed="false">
+              Pick dashboard scores such as coherence
+            </button>
+            <button type="button" data-answer="ten" aria-pressed="false">
+              Invent ten cases from coverage wishlists
+            </button>
+          </div>
+          <p class="feedback" data-feedback aria-live="polite"></p>
+        </article>
+
+        <article
+          class="question"
+          data-quiz
+          data-correct="one"
+          data-explanation="Start small: one or two fixtures per observed issue, then expand. A huge first batch burns working memory and skips learning."
+          data-hint="How many synthetic cases does Hamel recommend per issue at first?"
+        >
+          <h3>For one recurring failure category, start by adding…</h3>
+          <div class="answers">
+            <button type="button" data-answer="one" aria-pressed="false">
+              One or two synthetic fixtures
+            </button>
+            <button type="button" data-answer="big" aria-pressed="false">
+              One huge hundred-case dump
+            </button>
+            <button type="button" data-answer="none" aria-pressed="false">
+              Zero fixtures until logs exist
+            </button>
+          </div>
+          <p class="feedback" data-feedback aria-live="polite"></p>
+        </article>
+      </section>
+
+      <section>
+        <h2>Banked candidate: flat / stable</h2>
+        <p>
+          Since Lesson 9 you banked a fourth trend pressure: a marker series that does
+          <em>not</em> move, where a bad reply invents rise/fall. If your three analysis rows do not
+          surface a stronger uncovered miss, promote that pattern now—direction invent on a flat
+          series. If you already saw a sharper true fail in transcripts, promote
+          <em>that</em> instead. One new case beats two speculative ones.
+        </p>
+        <div class="formula" aria-label="Flat stable pattern">
+          flat series + “how is it trending?” → forbid invented direction; require stable/no-change language
+        </div>
+      </section>
+
+      <section>
+        <h2>Practice: one promotion</h2>
+        <div class="exercise">
+          <p>In LocalLab (and a scratch note):</p>
+          <ol>
+            <li>
+              Skim at least three transcripts from recent live/gate/bake-off runs (or canned fail
+              fixtures if that is all you have). Fill the
+              <a href="../reference/online-offline.html">error-analysis row</a>
+              columns for each.
+            </li>
+            <li>
+              Pick one <em>uncovered</em> failure pattern worth locking. Prefer a true fail or a
+              product risk you refuse to forget—not a grader FP you already fixed (those get a
+              canned FP regression if missing, not a new product pressure).
+            </li>
+            <li>
+              Ship one synthetic case: fixture + shared/fixture-specific Level 1 asserts + canned
+              Vitest pass/fail. Offline green first. Live optional this lesson unless the case joins
+              the ship gate immediately.
+            </li>
+            <li>
+              If the new case is in a suite the gate uses, note that the next chat-default ship needs
+              a fresh dual <code>pass^k</code>—do not silently enlarge the gate without re-clearing.
+            </li>
+          </ol>
+          <p>
+            Do not paste real lab values from personal data into fixtures. Do not dilute asserts to
+            make a hard pattern pass. Do not add five cases in one sitting.
+          </p>
+        </div>
+
+        <div class="checkpoint">
+          <strong>Retrieval checkpoint</strong>
+          <p>
+            Tell me: (1) your three analysis rows (short), (2) which pattern you promoted and why,
+            (3) case id + which suite, (4) canned Vitest result, (5) whether the ship gate’s case
+            count changed and if you re-ran pass^k.
+          </p>
+        </div>
+      </section>
+
+      <section>
+        <h2>Primary reading</h2>
+        <p>
+          Read Hamel’s
+          <a href="https://hamel.dev/notes/llm/officehours/erroranalysis.html"
+            >“Doing Error Analysis Before Writing Tests”</a
+          >
+          —especially the spreadsheet columns and “start small with synthetic data.” Skim the Level 1
+          “create test cases” section in
+          <a href="https://hamel.dev/blog/posts/evals/">Your AI Product Needs Evals</a>
+          for how Rechat keeps updating unit tests from new failures.
+        </p>
+      </section>
+
+      <section>
+        <h2>Where this leads</h2>
+        <p>
+          Once promotion is a habit, trajectory/process evals matter when chat becomes multi-step
+          (grade the path, not only the final text). Until then, keep looping observe → offline lock
+          whenever a true fail appears at the gate.
+        </p>
+      </section>
+
+      <footer>
+        Builds on
+        <a href="0013-passk-ship-gate.html">Lesson 13</a>,
+        <a href="0003-golden-set-dimensions.html">Lesson 3</a>,
+        and
+        <a href="0009-trend-golden-set-dimensions.html">Lesson 9</a>.
+        Claims grounded in
+        <a href="https://hamel.dev/notes/llm/officehours/erroranalysis.html">Hamel error analysis</a>,
+        <a href="https://hamel.dev/blog/posts/evals/">Hamel evals</a>,
+        the
+        <a href="../reference/online-offline.html">online → offline sheet</a>,
+        and the
+        <a href="../reference/eval-glossary.html">eval glossary</a>.
+        Ask follow-up questions if picking a pattern vs a one-off, or writing flat/stable asserts, is
+        unclear.
+      </footer>
+    </main>
+  </body>
+</html>

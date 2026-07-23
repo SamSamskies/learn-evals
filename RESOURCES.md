@@ -11,7 +11,7 @@
 - [Hamel Husain: LLM Evals FAQ](https://hamel.dev/blog/posts/evals-faq/)
   Practical corrections to common eval misconceptions, especially the need to discover real failure modes through error analysis. Use for: evolving the LocalLab suite after the first baseline; FAQ on model selection vs error analysis before shopping models; skepticism of prompt-optimizer-first workflows.
 - [Hamel Husain: Error analysis before writing tests](https://hamel.dev/notes/llm/officehours/erroranalysis.html)
-  Start from observed failure patterns, then write tests. Use for: deciding what a prompt change should target before A/B’ing guidance text on Level 1.
+  Spreadsheet-style categorization of conversations before metrics or more tests; start with 1–2 synthetic cases per issue. Use for: online → offline suite growth; deciding what a prompt change should target before A/B’ing guidance text on Level 1.
 
 ## Wisdom (Communities)
 
