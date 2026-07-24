@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Outcome vs process · Learn Evals</title>
+    <link rel="stylesheet" href="../assets/course.css" />
+  </head>
+  <body>
+    <main>
+      <header>
+        <p class="eyebrow">Reference · Agent grading</p>
+        <h1>Outcome vs process</h1>
+        <p class="lede">
+          Grade what the agent left behind—and, when needed, how it got there—without freezing one
+          brittle path.
+        </p>
+      </header>
+
+      <section>
+        <h2>Two lenses</h2>
+        <div class="formula" aria-label="Outcome and process">
+          outcome = final state · process = steps / tools / turns that produced it
+        </div>
+        <ul>
+          <li>
+            <strong>Outcome</strong> — Did the environment (or final reply) meet success criteria?
+            Reservation exists; series direction is correct; JSON validates.
+          </li>
+          <li>
+            <strong>Process</strong> — Did the path respect constraints? Required tools used; no
+            forbidden calls; early-stage failures caught before they cascade.
+          </li>
+          <li>
+            <strong>Transcript / trajectory</strong> — Full trial record: messages, tool calls,
+            intermediate results. You read it when graders disagree with humans.
+          </li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>When process earns a seat</h2>
+        <ul>
+          <li>A wrong path can still luck into a good-looking final reply.</li>
+          <li>You must forbid a tool (e.g. write to production DB) even if the reply text looks fine.</li>
+          <li>You need early-stage diagnostics—process fails are often cheaper to debug than outcomes.</li>
+        </ul>
+        <p>
+          Prefer outcomes when many valid paths exist.
+          <a href="https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents"
+            >Anthropic</a
+          >
+          warns against scoring one exact tool-call sequence—agents find valid routes you did not
+          script.
+        </p>
+      </section>
+
+      <section>
+        <h2>LocalLab today</h2>
+        <div class="formula" aria-label="LocalLab status">
+          panel / trend Level 1 = outcome-on-reply · no live agent loop yet
+        </div>
+        <p>
+          Single-turn chat is mostly outcome grading on the final string. Keep that. Add process
+          checks only when you introduce tools or multi-turn state—start with canned transcript
+          fixtures, not a SaaS platform.
+        </p>
+      </section>
+
+      <section>
+        <h2>Thin harness shape</h2>
+        <ol>
+          <li>Golden JSON transcript: user → tool calls → tool results → final assistant text.</li>
+          <li>Outcome asserts on final text (or environment snapshot).</li>
+          <li>
+            Process asserts on the call list: required tool present, forbidden tool absent—not
+            “must be calls in order A→B→C only.”
+          </li>
+          <li>Canned Vitest: one good, one lucky-bad-path, one bad-outcome.</li>
+        </ol>
+      </section>
+
+      <footer>
+        Sources:
+        <a href="https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents"
+          >Anthropic agent evals</a
+        >,
+        <a href="https://hamel.dev/blog/posts/evals-faq/how-do-i-evaluate-complex-multi-step-workflows.html"
+          >Hamel multi-step workflows</a
+        >.
+        Related:
+        <a href="eval-glossary.html">eval glossary</a>,
+        <a href="../lessons/0015-outcome-vs-process.html">Lesson 15</a>.
+      </footer>
+    </main>
+  </body>
+</html>

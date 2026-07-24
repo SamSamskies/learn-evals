@@ -76,9 +76,10 @@
           </p>
         </div>
         <div class="card">
-          <h3>Transcript</h3>
+          <h3>Transcript (trajectory)</h3>
           <p>
-            The full record of a trial (prompt, messages, model answer). Read failing transcripts before changing
+            The full record of a trial—prompts, messages, tool calls, intermediate results, and the final
+            answer. Anthropic also calls this a trace or trajectory. Read failing transcripts before changing
             prompts or graders; pass rate alone hides false graders.
           </p>
         </div>
@@ -170,6 +171,22 @@
             catches that mode forever. For LocalLab: promote the pattern, never raw medical production
             content—see the
             <a href="online-offline.html">online → offline sheet</a>.
+          </p>
+        </div>
+        <div class="card">
+          <h3>Outcome</h3>
+          <p>
+            The final state after a trial—reply text, DB row, file, or environment snapshot—against which
+            success criteria are scored. Distinct from the path that produced it.
+          </p>
+        </div>
+        <div class="card">
+          <h3>Process (trajectory) grader</h3>
+          <p>
+            A check on steps inside the transcript: tools used or forbidden, turns taken, early-stage
+            failures. Use to catch lucky final answers; avoid requiring one exact tool-call script when
+            many valid paths exist. See the
+            <a href="outcome-process.html">outcome vs process sheet</a>.
           </p>
         </div>
       </section>

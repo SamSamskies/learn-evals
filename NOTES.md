@@ -18,16 +18,17 @@
 - Lesson 11 done: trend bake-off both 3/3; medgemma ~2× faster; learner keeps `gemma4:26b-mlx` for quality (shared chat default). See LR-0015.
 - Lesson 12 done: dual-suite ship gate skill; grader FP at first gate run → harden assert → live all green. See LR-0016.
 - Lesson 13 done: dual ship gate pass^3 success on both suites. See LR-0017.
-- Lesson 14 = online → offline: error analysis → promote one observed failure pattern into a synthetic Level 1 case. Flat/stable invent-direction is the default candidate if no sharper miss appears.
+- Lesson 14 done: promoted banked flat/stable pattern as `hdl-stable` (55→55) into trend Level 1 + canned Vitest. See LR-0018.
+- Lesson 15 = outcome vs process (trajectory) grading: thin offline transcript harness (golden JSON + Vitest), not a live agent loop or ship-gate change. Prefer required/forbidden tools over exact-order scripts.
 - Prefer gating live evals behind an env flag so default `vitest run` stays offline-safe.
 - Do not teach “dilute assertions until green”; diagnose prompt vs model vs over-strict check first.
 - Fair compare rule: freeze cases + graders + two of {model, prompt}; vary exactly one axis.
 - Ship gates need calm graders: read transcripts; raise trial budget when flakes appear; gate clears on pass^k not pass@1.
 - Suite growth: observe → categorize → synthesize fixture → assert → canned then live; never raw medical production into git.
 
-## Future lessons (post-14) — agentic & trajectory track
+## Future lessons (post-15) — agentic & extraction track
 
 Cover later, in this order. Concepts > SaaS; thin local harness (golden JSON + Vitest, optional Ollama judge) is enough. Cloud platforms optional later for non-local products.
 
-1. **Trajectory / process evals** (when chat is multi-step, or just before) — grade steps and tool use, not only final text. Wrong path that lucks into a good answer still fails. Low urgency while Level 1 is single-reply; teach concepts early if needed, full practice when LocalLab has trajectories.
-2. **Outcome metrics for agents** (thin add-on with #1) — cost and latency *per resolved task*, not only $/request. Latency already in bake-offs; $/task barely matters on local Ollama until multi-step agents exist.
+1. **Outcome metrics for agents** — cost and latency *per resolved task*, not only $/request. Latency already in bake-offs; $/task barely matters on local Ollama until multi-step agents exist.
+2. **Extraction evals** — lab report PDF → structured panel JSON; compare Osmosis-Structure vs gemma4 / qwen3.6 on Ollama.

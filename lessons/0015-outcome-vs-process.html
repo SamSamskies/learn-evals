@@ -1,0 +1,257 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Outcome vs process · Learn Evals</title>
+    <link rel="stylesheet" href="../assets/course.css" />
+    <script src="../assets/quiz.js" defer></script>
+  </head>
+  <body>
+    <main>
+      <header>
+        <p class="eyebrow">Lesson 15 · 25 minutes</p>
+        <h1>Grade the path when luck lies</h1>
+        <p class="lede">
+          Final-text Level 1 is an outcome check. When work becomes multi-step, a lucky reply can
+          hide a bad trajectory—learn to grade both without freezing one brittle script.
+        </p>
+      </header>
+
+      <section>
+        <p class="kicker">The tangible win</p>
+        <p>
+          By the end, you will ship a
+          <em>thin offline</em>
+          <a href="../reference/outcome-process.html">outcome + process</a>
+          harness in LocalLab: one synthetic multi-step transcript shape, outcome asserts on the
+          final reply, process asserts on tool use (required / forbidden—not exact order), and
+          canned Vitest covering a good run, a lucky-bad-path run, and a bad-outcome run.
+        </p>
+
+        <div class="note">
+          <strong>What you just proved:</strong>
+          <a href="0014-online-offline-loop.html">Lesson 14</a> promoted
+          <code>hdl-stable</code> from a banked invent-direction pattern. Panel and trend Level 1
+          still grade the <em>final reply string</em>. That is correct for single-turn chat. This
+          lesson is the bridge before tools or multi-turn agents exist—so you already know what to
+          measure when they do.
+        </div>
+
+        <div class="formula" aria-label="Outcome and process">
+          outcome = final state · process = steps that produced it
+        </div>
+
+        <p>
+          <a href="https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents"
+            >Anthropic</a
+          >
+          separates the <em>transcript</em> (full trial record) from the <em>outcome</em> (final
+          environment state). A flight agent can say “booked” while no reservation exists—or the
+          reverse. For agents,
+          <a
+            href="https://hamel.dev/blog/posts/evals-faq/how-do-i-evaluate-complex-multi-step-workflows.html"
+            >Hamel</a
+          >
+          pairs outcome metrics with process metrics; process failures are often easier to debug
+          because they are more deterministic. Early-stage misses cascade.
+        </p>
+      </section>
+
+      <section>
+        <h2>Three failure shapes</h2>
+        <div class="cards">
+          <article class="card">
+            <h3>Bad outcome</h3>
+            <p>
+              Tools may look fine; the final reply invents a rise on flat HDL. Your current Level 1
+              already catches this.
+            </p>
+          </article>
+          <article class="card">
+            <h3>Lucky path</h3>
+            <p>
+              Final reply looks grounded, but the agent never called lookup—it hallucinated numbers
+              that happened to match. Outcome-only passes; process must fail.
+            </p>
+          </article>
+          <article class="card">
+            <h3>Brittle script</h3>
+            <p>
+              Requiring exact tool order A→B→C punishes valid alternate routes.
+              <a href="https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents"
+                >Anthropic</a
+              >
+              prefers grading what was produced over one scripted path.
+            </p>
+          </article>
+        </div>
+
+        <article
+          class="question"
+          data-quiz
+          data-correct="fin"
+          data-explanation="Outcome graders check the final state—reply text, DB row, file contents—not the exact tool choreography."
+          data-hint="What is left after the trial ends?"
+        >
+          <h3>An outcome grader primarily checks…</h3>
+          <div class="answers">
+            <button type="button" data-answer="fin" aria-pressed="false">
+              Final environment or reply state
+            </button>
+            <button type="button" data-answer="ord" aria-pressed="false">
+              Exact tool call sequence order
+            </button>
+            <button type="button" data-answer="tok" aria-pressed="false">
+              Average tokens per trial run
+            </button>
+          </div>
+          <p class="feedback" data-feedback aria-live="polite"></p>
+        </article>
+
+        <article
+          class="question"
+          data-quiz
+          data-correct="luck"
+          data-explanation="Process checks catch trajectories that skip required work yet still emit a plausible final answer."
+          data-hint="What can a good-looking final reply hide?"
+        >
+          <h3>Why add process checks at all?</h3>
+          <div class="answers">
+            <button type="button" data-answer="luck" aria-pressed="false">
+              Lucky answers can hide bad paths
+            </button>
+            <button type="button" data-answer="beat" aria-pressed="false">
+              Exact paths always beat final outcomes
+            </button>
+            <button type="button" data-answer="drop" aria-pressed="false">
+              Process scores replace all outcome checks
+            </button>
+          </div>
+          <p class="feedback" data-feedback aria-live="polite"></p>
+        </article>
+
+        <article
+          class="question"
+          data-quiz
+          data-correct="flex"
+          data-explanation="Anthropic: rigid exact-order tool scripts punish creative valid solutions. Prefer outcomes; constrain process lightly (required/forbidden)."
+          data-hint="What did Anthropic find too rigid?"
+        >
+          <h3>On tool-call sequences, prefer…</h3>
+          <div class="answers">
+            <button type="button" data-answer="flex" aria-pressed="false">
+              Outcomes over brittle step scripts
+            </button>
+            <button type="button" data-answer="one" aria-pressed="false">
+              One exact mandatory tool order
+            </button>
+            <button type="button" data-answer="only" aria-pressed="false">
+              Paths only; ignore final outcomes
+            </button>
+          </div>
+          <p class="feedback" data-feedback aria-live="polite"></p>
+        </article>
+      </section>
+
+      <section>
+        <h2>LocalLab-shaped toy agent</h2>
+        <p>
+          Imagine a tiny trend helper (not production yet) with one tool:
+          <code>getTrendSeries(marker)</code>. User asks “Is my HDL rising?” on a flat 55→55 series.
+          A good trajectory calls the tool, then answers with stable language. A lucky trajectory
+          skips the tool but still says “stable at 55.” A bad trajectory calls the tool and still
+          invents a rise.
+        </p>
+        <div class="formula" aria-label="Toy graders">
+          outcome: stable language + cite 55 · process: getTrendSeries called · forbid: writeDb
+        </div>
+      </section>
+
+      <section>
+        <h2>Practice: thin transcript harness</h2>
+        <div class="exercise">
+          <p>In LocalLab (offline only—no live agent loop required):</p>
+          <ol>
+            <li>
+              Add a small module (e.g. under <code>server/evals/</code>) with a typed transcript
+              shape: <code>userMessage</code>, <code>toolCalls[]</code> (name + args),
+              <code>finalReply</code>. Seed one synthetic flat-HDL scenario.
+            </li>
+            <li>
+              Write outcome graders on <code>finalReply</code> (reuse Level 1 instincts: cite 55,
+              state stable, no false rise). Write process graders on <code>toolCalls</code>:
+              <code>getTrendSeries</code> present; <code>writeDb</code> (or any write tool) absent.
+              Do <em>not</em> require a single exact call order beyond “lookup before answer” if you
+              only have one call.
+            </li>
+            <li>
+              Ship three canned transcripts + Vitest: (A) good outcome + good process, (B) good
+              outcome + skipped tool (must fail process), (C) called tool + invented rise (must fail
+              outcome). Offline green. Do not wire Ollama or change the ship gate.
+            </li>
+          </ol>
+          <p>
+            Keep fixtures synthetic. Do not replace panel/trend Level 1 with this toy. Do not add a
+            second inference provider.
+          </p>
+        </div>
+
+        <div class="checkpoint">
+          <strong>Retrieval checkpoint</strong>
+          <p>
+            Tell me: (1) where the transcript type lives, (2) your outcome assert ids, (3) your
+            process assert ids, (4) which of A/B/C fail which graders, (5) one sentence on when you
+            would <em>not</em> add a process check to a LocalLab change.
+          </p>
+        </div>
+      </section>
+
+      <section>
+        <h2>Primary reading</h2>
+        <p>
+          Read Anthropic’s
+          <a href="https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents"
+            >Demystifying evals for AI agents</a
+          >
+          —definitions of transcript vs outcome, and the “don’t grade one exact tool sequence”
+          warning in grader design. Skim Hamel’s
+          <a
+            href="https://hamel.dev/blog/posts/evals-faq/how-do-i-evaluate-complex-multi-step-workflows.html"
+            >multi-step workflow FAQ</a
+          >
+          for outcome + process pairing and early-stage cascade risk.
+        </p>
+      </section>
+
+      <section>
+        <h2>Where this leads</h2>
+        <p>
+          Next up when you want it: outcome metrics per resolved task (cost/latency for multi-step),
+          then extraction evals for lab PDF → panel JSON. Until LocalLab grows tools, keep looping
+          online → offline on chat Level 1 and treat this harness as a template, not a ship gate.
+        </p>
+      </section>
+
+      <footer>
+        Builds on
+        <a href="0014-online-offline-loop.html">Lesson 14</a>
+        and
+        <a href="0002-level-1-assertions.html">Lesson 2</a>.
+        Claims grounded in
+        <a href="https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents"
+          >Anthropic agent evals</a
+        >,
+        <a
+          href="https://hamel.dev/blog/posts/evals-faq/how-do-i-evaluate-complex-multi-step-workflows.html"
+          >Hamel multi-step FAQ</a
+        >,
+        the
+        <a href="../reference/outcome-process.html">outcome vs process sheet</a>,
+        and the
+        <a href="../reference/eval-glossary.html">eval glossary</a>.
+        Ask follow-up questions if “lucky path” vs “brittle script” is still fuzzy.
+      </footer>
+    </main>
+  </body>
+</html>
